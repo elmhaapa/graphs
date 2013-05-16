@@ -9,7 +9,9 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws InterruptedException {
-        // TODO code application logic here
+        /*
+         * Some test to check how everything works.
+         */
         int size_of_map = 10;
         Window a = new Window(size_of_map);
         Runner v = new Runner(size_of_map);

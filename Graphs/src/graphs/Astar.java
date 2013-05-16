@@ -6,7 +6,9 @@ package graphs;
 
 import java.util.ArrayList;
 import java.util.Stack;
-
+/*
+ * Astar shortest  path algorithm
+ */
 public class Astar {
 
     // Closed set

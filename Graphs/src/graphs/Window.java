@@ -10,7 +10,9 @@ import java.awt.GridLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-
+/*
+ * For generating simple gui to see what's happening.
+ */
 public class Window {
 
     private int grid_size;
