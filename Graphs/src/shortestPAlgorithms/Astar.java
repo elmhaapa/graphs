@@ -2,8 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package graphs;
+package shortestPAlgorithms;
 
+import datastructures.Point;
+import datastructures.Node;
+import datastructures.Priorityqueue;
 import java.util.ArrayList;
 import java.util.Stack;
 /**
@@ -21,7 +24,7 @@ public class Astar {
     
     /**
      * Gets shortest path between two points using a* shortest path algorithm.
-     * @param size size of the map (square root atm) FIX THIS!
+     * @param size size of the map (size * size = number of nodes)
      * @param s_x Starting point x coordinate.
      * @param s_y Starting point y coordinate.
      * @param t_x Target point x coordinate.
@@ -30,7 +33,7 @@ public class Astar {
      */
     public Stack<Point> get_shortest_path(int size, int s_x, int s_y, int t_x, int t_y) {
         target = new Node(t_x, t_y);
-        Node start = new Node(s_x, s_y);
+        Node start = new Node(s_x, s_y, 0);
 
         q = new Priorityqueue(size*size);
         grid = new boolean[size][size];
@@ -50,7 +53,8 @@ public class Astar {
             for (Node n : get_neighbours(current)) {
                 n.previous = current;
                 grid[n.x][n.y] = true;
-                n.f_value = manhattan_h(n.x, n.x, target.x, target.y);
+                n.g_value = current.g_value + 1;
+                n.f_value = n.g_value + manhattan_h(n.x, n.x, target.x, target.y);
                 q.insert(n);
             }
 
@@ -66,7 +70,7 @@ public class Astar {
         
         return s;
     }
-    /*
+    /**
      * Counts manhattan heuristic for astar.
      */
     private int manhattan_h(int x, int y, int tx, int ty) {
@@ -75,6 +79,7 @@ public class Astar {
         return 1 * (dx + dy);
     }
 
+    // OMA TIETORAKENNE TÄHÄN
     private ArrayList<Node> get_neighbours(Node n) {
         ArrayList<Node> ret = new ArrayList<Node>();
         if (check_not_visited(n.x + 1, n.y)) {
@@ -93,7 +98,7 @@ public class Astar {
 
     }
     
-    /*
+    /**
      * Checks if coordinates are in bounds of grid and if node is visited.
      * Returns true if in bounds and not visited.
      */

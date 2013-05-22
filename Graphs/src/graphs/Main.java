@@ -1,6 +1,9 @@
 
 package graphs;
 
+import gui.Window;
+import shortestPAlgorithms.Astar;
+import datastructures.Point;
 import java.util.Stack;
 
 public class Main {

@@ -1,5 +1,5 @@
 
-package graphs;
+package datastructures;
 
 /**
  * This is a priority queue for Nodes implemented as min binary heap
@@ -44,6 +44,9 @@ public class Priorityqueue {
     }
     public void insert(Node n) {
         size++;
+        if (size > heap.length-1) {
+            double_up();
+        }
         heap[size] = n;
         int current = size;
         
@@ -59,6 +62,13 @@ public class Priorityqueue {
             pushdown(1);
         }
         return heap[size+1];
+    }
+    private void double_up() {
+        Node[] tmp = new Node[size*2];
+        for (int i = 0; i <= size; ++i) {
+            tmp[i] = heap[i];
+        }
+        heap = tmp;
     }
     
     private void pushdown(int position) {

@@ -4,6 +4,8 @@
  */
 package graphs;
 
+import datastructures.Point;
+
 /**
  * Class to represent target object which runs around the map. 
  */
