@@ -1,7 +1,7 @@
 
 package graphs;
 
-/*
+/**
  * This is a priority queue for Nodes implemented as min binary heap
  * comparing f_values.
  */

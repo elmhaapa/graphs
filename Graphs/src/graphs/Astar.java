@@ -6,7 +6,7 @@ package graphs;
 
 import java.util.ArrayList;
 import java.util.Stack;
-/*
+/**
  * Astar shortest  path algorithm
  */
 public class Astar {
@@ -19,6 +19,15 @@ public class Astar {
     // Open set
     private Priorityqueue q;
     
+    /**
+     * Gets shortest path between two points using a* shortest path algorithm.
+     * @param size size of the map (square root atm) FIX THIS!
+     * @param s_x Starting point x coordinate.
+     * @param s_y Starting point y coordinate.
+     * @param t_x Target point x coordinate.
+     * @param t_y Target point y coordinate.
+     * @return Return collection of Point objects which is route from start to target.
+     */
     public Stack<Point> get_shortest_path(int size, int s_x, int s_y, int t_x, int t_y) {
         target = new Node(t_x, t_y);
         Node start = new Node(s_x, s_y);

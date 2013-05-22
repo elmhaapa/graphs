@@ -4,7 +4,7 @@
  */
 package graphs;
 
-/*
+/**
  * Class to represent target object which runs around the map. 
  */
 public class Runner {
@@ -18,7 +18,7 @@ public class Runner {
         target = new Point(0, 0);
     }
 
-    /*
+    /**
      * Moves the target on grid one step. Target runs around the borders of grid
      * clockwise.
      */

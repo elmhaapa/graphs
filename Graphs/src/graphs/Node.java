@@ -1,7 +1,7 @@
 
 package graphs;
 
-/*
+/**
  * Node class for path finding algorithms.
  * way too many constructors atm.
  */
