@@ -3,7 +3,7 @@ package datastructures;
 
 /**
  * Node class for path finding algorithms.
- * way too many constructors atm.
+ * 
  */
 public class Node {
     
@@ -25,5 +25,6 @@ public class Node {
         this.y = y;
         g_value = g;
     }
+    
 
 }

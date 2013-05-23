@@ -19,7 +19,11 @@ public class Priorityqueue {
         heap[0] = new Node(0,0,Integer.MIN_VALUE);
     }
     
-    public boolean isEmpty() {
+    /**
+     * Return true if heap is empty.
+     * 
+     */
+    public boolean is_empty() {
         return size == 0;
     }
     
@@ -55,6 +59,10 @@ public class Priorityqueue {
             current = parent(current);
         }
     }
+    /**
+     * Removes and returns smallest node.
+     * @return Node with smallest f_value
+     */
     public Node removemin() {
         swap(1, size);
         size--;

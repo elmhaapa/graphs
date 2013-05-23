@@ -14,9 +14,11 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Blackstorm
+ * 
  */
 public class PriorityqueueTest {
+    
+    Priorityqueue q;
     
     public PriorityqueueTest() {
     }
@@ -31,6 +33,7 @@ public class PriorityqueueTest {
     
     @Before
     public void setUp() {
+        q = new Priorityqueue(40);
     }
     
     @After
@@ -44,28 +47,28 @@ public class PriorityqueueTest {
     
     @Test
     public void testIsEmpty() {
-        Priorityqueue q = new Priorityqueue(5);
+        
         q.insert(new Node(1,2));
         q.insert(new Node(1,2));
         q.removemin();
         q.removemin();
-        assertEquals(true, q.isEmpty());
+        assertEquals(true, q.is_empty());
     }
     @Test
     public void testQueue() {
-        Priorityqueue q = new Priorityqueue(20);
+        
         for (int i = 20; i > 0; --i) {
             Node n = new Node(0, 0);
             n.f_value = i;
             q.insert(n);
         }
-        /*
+        
         for (int i = 1; i <= 20; ++i) {
             Node n = q.removemin();
             assertEquals(i, n.f_value);
-        } */
+        } 
         
-        assertEquals(1, q.removemin().f_value);
-        assertEquals(2, q.removemin().f_value);
+   //     assertEquals(1, q.removemin().f_value);
+     //   assertEquals(2, q.removemin().f_value);
     }
 }
