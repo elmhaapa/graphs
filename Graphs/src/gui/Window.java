@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 public class Window {
 
     private int grid_size;
-    private Dimension box_size = new Dimension(25, 25);
+    private Dimension box_size = new Dimension(15, 15);
     private JPanel[][] grid;
     private Color[] colors =  { Color.gray, Color.red, Color.green };
 

@@ -3,8 +3,8 @@ package graphs;
 
 import gui.Window;
 import shortestPAlgorithms.Astar;
-import datastructures.Point;
-import java.util.Stack;
+import datastructures.Node;
+import datastructures.Stack;
 
 public class Main {
 
@@ -15,7 +15,7 @@ public class Main {
         /*
          * Some test to check how everything works.
          */
-        int size_of_map = 10;
+        int size_of_map = 30;
         Window a = new Window(size_of_map);
         Runner v = new Runner(size_of_map);
         Astar tahti = new Astar();
@@ -23,10 +23,10 @@ public class Main {
         int tahti_y = size_of_map/2;
         a.change_color(tahti_x, tahti_y, 2);
         
-        Stack<Point> s = tahti.get_shortest_path(size_of_map, tahti_x, tahti_y, 4, 3);
+        Stack s = tahti.get_shortest_path(size_of_map, tahti_x, tahti_y, 5, 28);
             
-            while ( !s.isEmpty() ) {
-                Point p = s.pop();
+            while ( !s.is_empty() ) {
+                Node p = s.pop();
                 a.change_color(p.x, p.y, 2);
             }
         /*

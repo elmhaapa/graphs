@@ -4,7 +4,7 @@
  */
 package graphs;
 
-import datastructures.Point;
+import datastructures.Node;
 
 /**
  * Class to represent target object which runs around the map. 
@@ -12,12 +12,12 @@ import datastructures.Point;
 public class Runner {
 
     private int[][] graph;
-    static private Point target;
+    static private Node target;
 
 
     public Runner(int size) {
         graph = new int[size][size];
-        target = new Point(0, 0);
+        target = new Node(0, 0);
     }
 
     /**
@@ -38,7 +38,7 @@ public class Runner {
             target.x--;
         }
     }
-    public Point get_target() {
+    public Node get_target() {
         return target;
     }
 
