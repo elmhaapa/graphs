@@ -19,7 +19,11 @@ public class Priorityqueue {
         heap[0] = new Node(0,0,Integer.MIN_VALUE);
     }
     
-    public boolean isEmpty() {
+    /**
+     * Return true if heap is empty.
+     * 
+     */
+    public boolean is_empty() {
         return size == 0;
     }
     
@@ -35,6 +39,11 @@ public class Priorityqueue {
     private boolean isleaf(int i) {
         return ((i > size/2) && (i <= size));
     }
+    /**
+     * Swaps two nodes in heap which are in positions p1 and p2
+     * @param p1 position of node to be swapped
+     * @param p2 position of second node to be swapped.
+     */
     private void swap(int p1, int p2) {
         Node tmp;
         
@@ -42,6 +51,10 @@ public class Priorityqueue {
         heap[p1] = heap[p2];
         heap[p2] = tmp;
     }
+    /**
+     * Inserts a node to heap.
+     * @param n node to be inserted.
+     */
     public void insert(Node n) {
         size++;
         if (size > heap.length-1) {
@@ -55,6 +68,10 @@ public class Priorityqueue {
             current = parent(current);
         }
     }
+    /**
+     * Removes and returns smallest node.
+     * @return Node with smallest f_value
+     */
     public Node removemin() {
         swap(1, size);
         size--;
@@ -63,14 +80,46 @@ public class Priorityqueue {
         }
         return heap[size+1];
     }
+    /**
+     * We search for node with same x and y value as given node. Then we remove it from heap.
+     * @param n node to look for.
+     * @return removed node.
+     */
+    public Node remove_middle(Node n) {
+        int index = 0;
+        int i = 1;
+        while (index == 0 && i <= size) {
+            if (heap[i].x == n.x && heap[i].y == n.y) {
+                index = i;
+                break;
+            }
+            ++i;
+        }
+        if (index == 0) {
+            return null;
+        }
+        Node ret = heap[index];
+        swap(index, size);
+        size--;
+        if (size != 0) {
+            pushdown(size);
+        }
+        return ret;
+    }
+    /**
+     * If array fills up and we need to increase size we double it up.
+     */
     private void double_up() {
         Node[] tmp = new Node[size*2];
-        for (int i = 0; i <= size; ++i) {
+        for (int i = 0; i < size; ++i) {
             tmp[i] = heap[i];
         }
         heap = tmp;
     }
-    
+    /**
+     * Pushes down node from given position to keep up heap property.
+     * @param position 
+     */
     private void pushdown(int position) {
         int smallestchild;
         while (!isleaf(position)) {

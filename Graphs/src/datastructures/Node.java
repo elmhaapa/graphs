@@ -3,21 +3,23 @@ package datastructures;
 
 /**
  * Node class for path finding algorithms.
- * way too many constructors atm.
+ * 
  */
 public class Node {
     
     public int x;
     public int y;
-    public int f_value;
-    public int g_value;
+    public double f_value;
+    public double g_value;
     public Node previous;
+    public boolean opened;
     
     public Node(int x, int y) {
         this.x = x;
         this.y = y;
         previous = null;
         f_value = 0;
+        g_value = 0;
     }
 
     public Node(int x, int y, int g) {
@@ -25,5 +27,6 @@ public class Node {
         this.y = y;
         g_value = g;
     }
+    
 
 }

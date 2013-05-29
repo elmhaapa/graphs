@@ -20,10 +20,16 @@ public class Stack {
         stack = new Node[max_size];
     }
     
+    
+    
     public boolean is_empty() {
         return size == 0;
     }
     
+    /**
+     * Pushes node to stack.
+     * @param n node
+     */
     public void push(Node n) {
         size++;
         if (size > max_size-1) {
@@ -31,12 +37,20 @@ public class Stack {
         }
         stack[size] = n;
     }
-    
+    /**
+     * Retrieves a node from stack.
+     * @return 
+     */
     public Node pop() {
         size--;
         return stack[size+1];
     }
-    
+    public int size() {
+        return size;
+    }
+    /**
+     * We array fills up we need to double to size of stack (array).
+     */
     private void double_up() {
         Node[] tmp = new Node[max_size*2];
         for (int i = 0; i < max_size; ++i) {

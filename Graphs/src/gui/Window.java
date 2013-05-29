@@ -18,12 +18,13 @@ public class Window {
     private int grid_size;
     private Dimension box_size = new Dimension(15, 15);
     private JPanel[][] grid;
-    private Color[] colors =  { Color.gray, Color.red, Color.green };
+    private int[][] map;
+    private Color[] colors =  { Color.darkGray, Color.red, Color.ORANGE, Color.CYAN };
 
-    public Window(int grid_size) {
-        this.grid_size = grid_size;
+    public Window(int[][] map) {
+        this.grid_size = map.length;
         grid = new JPanel[grid_size][grid_size];
-
+        this.map = map;
         JFrame frame = new JFrame("Graphs");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setContentPane(create_content());
@@ -44,7 +45,11 @@ public class Window {
         for (int i = 0; i < grid_size; ++i) {
             for (int j = 0; j < grid_size; ++j) {            
                 grid[i][j] = new JPanel();
-                grid[i][j].setBackground(Color.gray);
+                if (map[i][j] == 9) {
+                    grid[i][j].setBackground(Color.white);
+                } else {
+                    grid[i][j].setBackground(Color.darkGray);
+                }
                 grid[i][j].setMinimumSize(box_size);
                 grid[i][j].setMaximumSize(box_size);
                 grid[i][j].setPreferredSize(box_size);

@@ -14,10 +14,12 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Blackstorm
+ * 
  */
 public class AstarTest {
 
+    Astar a;
+    int[][] grid;
     public AstarTest() {
     }
 
@@ -31,6 +33,8 @@ public class AstarTest {
 
     @Before
     public void setUp() {
+        a = new Astar();
+        grid = new int[30][30];
     }
 
     @After
@@ -42,8 +46,7 @@ public class AstarTest {
 
     @Test
     public void shortestPath() {
-        Astar a = new Astar();
-        Stack s = a.get_shortest_path(10, 0, 0, 3, 3);
+        Stack s = a.get_shortest_path(grid, 0, 0, 3, 3);
         int steps = 0;
         while ( !s.is_empty() ) {
             s.pop();
@@ -51,10 +54,24 @@ public class AstarTest {
         }
      assertEquals(6, steps); 
     }
+    
+    @Test
+    public void shortestPath2() {
+        int x = (int) (100*Math.random() % 30);
+        int y = (int) (100*Math.random() % 30);
+        Stack s = a.get_shortest_path(grid, 0, 0, x, y);
+        int exp_result = x + y;
+        int steps = 0;
+        while (!s.is_empty()) {
+            s.pop();
+            steps++;        
+        }
+        assertEquals(exp_result, steps);
+    }
     @Test
     public void correctLastStep() {
         Astar a = new Astar();
-        Stack s = a.get_shortest_path(10, 0, 0, 1, 2);
+        Stack s = a.get_shortest_path(grid, 0, 0, 1, 2);
         Node lastStep = s.pop();
         while ( !s.is_empty() ) {
             lastStep = s.pop();
