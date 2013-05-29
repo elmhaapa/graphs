@@ -67,6 +67,7 @@ public class PriorityqueueTest {
             Node n = q.removemin();
             assertEquals(i, n.f_value);
         } 
+<<<<<<< HEAD
         
    //     assertEquals(1, q.removemin().f_value);
      //   assertEquals(2, q.removemin().f_value);
@@ -87,6 +88,11 @@ public class PriorityqueueTest {
         assertEquals(5, q.removemin().x);
                 
         
+=======
+        
+   //     assertEquals(1, q.removemin().f_value);
+     //   assertEquals(2, q.removemin().f_value);
+>>>>>>> 1c964feea2940c70d624811bf881f698ab326069
     }
     @Test
     public void testSize() {

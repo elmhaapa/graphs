@@ -19,7 +19,10 @@ import static org.junit.Assert.*;
 public class AstarTest {
 
     Astar a;
+<<<<<<< HEAD
     int[][] grid;
+=======
+>>>>>>> 1c964feea2940c70d624811bf881f698ab326069
     public AstarTest() {
     }
 
@@ -34,7 +37,10 @@ public class AstarTest {
     @Before
     public void setUp() {
         a = new Astar();
+<<<<<<< HEAD
         grid = new int[30][30];
+=======
+>>>>>>> 1c964feea2940c70d624811bf881f698ab326069
     }
 
     @After
@@ -46,7 +52,11 @@ public class AstarTest {
 
     @Test
     public void shortestPath() {
+<<<<<<< HEAD
         Stack s = a.get_shortest_path(grid, 0, 0, 3, 3);
+=======
+        Stack s = a.get_shortest_path(10, 0, 0, 3, 3);
+>>>>>>> 1c964feea2940c70d624811bf881f698ab326069
         int steps = 0;
         while ( !s.is_empty() ) {
             s.pop();
@@ -59,7 +69,11 @@ public class AstarTest {
     public void shortestPath2() {
         int x = (int) (100*Math.random() % 30);
         int y = (int) (100*Math.random() % 30);
+<<<<<<< HEAD
         Stack s = a.get_shortest_path(grid, 0, 0, x, y);
+=======
+        Stack s = a.get_shortest_path(30, 0, 0, x, y);
+>>>>>>> 1c964feea2940c70d624811bf881f698ab326069
         int exp_result = x + y;
         int steps = 0;
         while (!s.is_empty()) {
