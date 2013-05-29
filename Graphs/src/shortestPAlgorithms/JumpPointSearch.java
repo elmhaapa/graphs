@@ -18,7 +18,6 @@ public class JumpPointSearch {
     private Priorityqueue open_set;
     private Node start;
     private Node target;
-<<<<<<< HEAD
     private Node[][] map;
     private int[][] grid;
 
@@ -294,63 +293,11 @@ public class JumpPointSearch {
         }
         if (check_is_node(n.x + 1, n.y + 1)) {
             create_n_stack__nodes(n.x + 1, n.y + 1, ret);
-=======
-
-    public JumpPointSearch(int size) {
-        closed_set = new boolean[size][size];
-        open_set = new Priorityqueue(size * size);
-
-    }
-/**
- * Gets shortest path between two points. atm does nothing.
- * @param s_x starting point's x coordinate.
- * @param s_y starting point's y coordinate.
- * @param t_x target point's x 
- * @param t_y target point's y 
- * @return return a stack of nodes which is route from start to target. first 
- * step at the top.
- */
-    public Stack get_shortest_path(int s_x, int s_y, int t_x, int t_y) {
-        start = new Node(s_x, s_y, 0);
-        target = new Node(t_x, t_y);
-        open_set.insert(start);
-
-        while (!open_set.is_empty()) {
-            Node current = open_set.removemin();
-            
-            Stack neighbours = get_neighbours(current);
-            while (!neighbours.is_empty()) {
-                Node n = neighbours.pop();
-                // TÄHÄN Node jumped_node = jump(n);
-            }
-        }
-        
-        
-        return new Stack(3);
-    }
-
-    
-    // FIXAA NÄÄ !
-    private Stack get_neighbours(Node n) {
-        Stack ret = new Stack(4);
-        if (check_not_visited(n.x + 1, n.y)) {
-            ret.push(new Node(n.x + 1, n.y));
-        }
-        if (check_not_visited(n.x, n.y + 1)) {
-            ret.push(new Node(n.x, n.y + 1));
-        }
-        if (check_not_visited(n.x - 1, n.y)) {
-            ret.push(new Node(n.x - 1, n.y));
-        }
-        if (check_not_visited(n.x, n.y - 1)) {
-            ret.push(new Node(n.x, n.y - 1));
->>>>>>> 1c964feea2940c70d624811bf881f698ab326069
         }
         return ret;
 
     }
 
-<<<<<<< HEAD
     /**
      * We add given node from map to stack to be returned as neighbour. If node
      * is not in the map yet we create a new one.
@@ -373,10 +320,6 @@ public class JumpPointSearch {
      */
     private boolean check_is_node(int x, int y) {
         if (x >= 0 && y >= 0 && x < closed_set.length && y < closed_set.length && grid[x][y] != 9) {
-=======
-    private boolean check_not_visited(int x, int y) {
-        if (x >= 0 && y >= 0 && x < closed_set.length && y < closed_set.length && !closed_set[x][y]) {
->>>>>>> 1c964feea2940c70d624811bf881f698ab326069
             return true;
         }
         return false;

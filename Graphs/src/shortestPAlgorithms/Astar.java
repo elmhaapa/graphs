@@ -16,14 +16,10 @@ public class Astar {
     private boolean closed_set[][];
     private Node target;
     private Priorityqueue open_set;
-<<<<<<< HEAD
     private int size;
     private Node[][] map;
     private int[][] grid;
     
-=======
-
->>>>>>> 1c964feea2940c70d624811bf881f698ab326069
     /**
      * Gets shortest path between two points using a* shortest path algorithm.
      *
@@ -32,12 +28,7 @@ public class Astar {
      * @param s_y Starting point y coordinate.
      * @param t_x Target point x coordinate.
      * @param t_y Target point y coordinate.
-<<<<<<< HEAD
      * @return Return stack of Node objects which is route from start to target.
-=======
-     * @return Return stack of Node objects which is route from start to
-     * target.
->>>>>>> 1c964feea2940c70d624811bf881f698ab326069
      */
     public Stack get_shortest_path(int[][] grid, int s_x, int s_y, int t_x, int t_y) {
         size = grid.length;
@@ -61,11 +52,7 @@ public class Astar {
         start.opened = true;
 
         while (!open_set.is_empty()) {
-<<<<<<< HEAD
             
-=======
-
->>>>>>> 1c964feea2940c70d624811bf881f698ab326069
             Node current = open_set.removemin();
             // Node with smallest f_value.
             closed_set[current.x][current.y] = true;
@@ -77,10 +64,7 @@ public class Astar {
             }
 
             Stack neigbours = get_neighbours(current);
-<<<<<<< HEAD
 
-=======
->>>>>>> 1c964feea2940c70d624811bf881f698ab326069
             while (!neigbours.is_empty()) {
                 Node n = neigbours.pop();
 
@@ -132,7 +116,6 @@ public class Astar {
         return 1 * (dx + dy);
     }
 
-<<<<<<< HEAD
     /**
      * Returns neighbours for node N
      * @param n node for returning neighbours
@@ -164,30 +147,10 @@ public class Astar {
         }
         if (check_is_node(n.x+1, n.y+1)) {
             create_n_stack__nodes(n.x+1, n.y+1, ret);
-=======
-
-    private Stack get_neighbours(Node n) {
-        Stack ret = new Stack(4);
-        if (check_not_visited(n.x + 1, n.y)) {
-            ret.push(new Node(n.x + 1, n.y));
-        }
-        if (check_not_visited(n.x, n.y + 1)) {
-            ret.push(new Node(n.x, n.y + 1));
-        }
-        if (check_not_visited(n.x - 1, n.y)) {
-            ret.push(new Node(n.x - 1, n.y));
-        }
-        if (check_not_visited(n.x, n.y - 1)) {
-            ret.push(new Node(n.x, n.y - 1));
->>>>>>> 1c964feea2940c70d624811bf881f698ab326069
         }
         return ret;
 
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> 1c964feea2940c70d624811bf881f698ab326069
     /**
      * If node we need is in map already push it stack. If not create it and push stack.
      * @param x coordinate of node
