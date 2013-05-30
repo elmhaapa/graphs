@@ -15,8 +15,8 @@ import static org.junit.Assert.*;
 import shortestPAlgorithms.JumpPointSearch;
 
 /**
- *
- * @author Blackstorm
+ * Tests for JPS
+ * 
  */
 public class JumpPointSearchTest {
     private JumpPointSearch jps;

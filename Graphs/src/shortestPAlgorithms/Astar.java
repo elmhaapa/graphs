@@ -72,10 +72,7 @@ public class Astar {
                     continue;
                 }
                 double cost = current.g_value + 1;
-                if (n.x != current.x && n.y != current.y) {
-                    // It's a diagonal step so weight have to be sqrt(1)=1
-                    cost = current.g_value + Math.sqrt(1);
-                } 
+		// Diagonal step would be (n.y != current.y && n.x != current.x)
                
                 if (!n.opened || cost < n.g_value) {
                     // If node is either not in priorityqueue yet or it's g_value should be updated.
