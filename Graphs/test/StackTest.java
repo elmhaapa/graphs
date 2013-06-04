@@ -58,4 +58,13 @@ public class StackTest {
         s.pop();
         assertEquals(true, s.is_empty());
     }
+    
+    @Test
+    public void test_double_up() {
+        Stack s = new Stack(2);
+        for (int i = 0; i < 20; ++i) {
+            s.push(new Node(i,i));
+        }
+        
+    }
 }

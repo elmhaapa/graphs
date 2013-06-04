@@ -32,7 +32,7 @@ public class Stack {
      */
     public void push(Node n) {
         size++;
-        if (size > max_size-1) {
+        if (size > stack.length-1) {
             double_up();
         }
         stack[size] = n;
@@ -42,6 +42,9 @@ public class Stack {
      * @return 
      */
     public Node pop() {
+        if (size == -1) {
+            return null;
+        }
         size--;
         return stack[size+1];
     }
@@ -52,8 +55,8 @@ public class Stack {
      * We array fills up we need to double to size of stack (array).
      */
     private void double_up() {
-        Node[] tmp = new Node[max_size*2];
-        for (int i = 0; i < max_size; ++i) {
+        Node[] tmp = new Node[stack.length*2];
+        for (int i = 0; i < stack.length; ++i) {
             tmp[i] = stack[i];
         }
         stack = tmp;

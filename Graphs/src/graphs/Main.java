@@ -29,6 +29,7 @@ public class Main {
      */
     private static int[][] build_grid(int size) {
         int[][] grid = new int[size][size];
+        
         for (int i = 0; i < size - 1; ++i) {
             boolean set = false;
             while (!set) {
@@ -39,6 +40,7 @@ public class Main {
                 }
             }
         }
+        
         return grid;
     }
 
@@ -46,6 +48,7 @@ public class Main {
         /*
          * Some test to check how everything works.
          */
+        
 
         int size_of_map = 30;
         int[][] grid = build_grid(size_of_map);
@@ -64,7 +67,7 @@ public class Main {
         
         long endTime = System.currentTimeMillis();
         long difference = endTime - startTime;
-        System.out.println("A* MS: " + difference );
+        System.out.println("A* MS: " + difference + " Size: " + s.size() );
         
         while (!s.is_empty()) {
             Node p = s.pop();
@@ -76,13 +79,21 @@ public class Main {
         s = jps.get_shortest_path(tahti_x, tahti_y, 0, 0, grid);
         endTime = System.currentTimeMillis();
         difference = endTime - startTime;
-        System.out.println("JPS MS: " + difference);
+        System.out.println("JPS MS: " + difference + " Size :" + s.size());
         
         while (!s.is_empty()) {
             Node p = s.pop();
-            
+         //   Thread.sleep(500);
             a.change_color(p.x, p.y, 3);        
         }
-
+        
+        
+        /*
+        int[][] t = new int[][] { {1,1}, {1,3}, {1,5}, {3,5}, {5,5}, {5,3}, {5,1}, {3,1}};
+        
+        for (int i = 0; i < t.length; ++i) {
+            System.out.println((3-t[i][0]) + " " + (3- t[i][1]));
+        }
+        */
     }
 }

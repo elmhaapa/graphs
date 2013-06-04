@@ -7,6 +7,7 @@ package shortestPAlgorithms;
 import datastructures.Priorityqueue;
 import datastructures.Node;
 import datastructures.Stack;
+import datastructures.Queue;
 
 /**
  * Jump point search for finding shortest path between two points.
@@ -20,6 +21,7 @@ public class JumpPointSearch {
     private Node target;
     private Node[][] map;
     private int[][] grid;
+    private Node last_jp;
 
     /**
      * Initialize nodes in map. We are supposed to not need this in the end.
@@ -45,283 +47,267 @@ public class JumpPointSearch {
      */
     public Stack get_shortest_path(int s_x, int s_y, int t_x, int t_y, int[][] grid) {
         this.grid = grid;
-        int size = grid.length;
-        start = new Node(s_x, s_y, 0);
-        map = new Node[size][size];
+        map = new Node[grid.length][grid.length];
         initialize_map();
+        int size = grid.length;
         open_set = new Priorityqueue(size * size);
         closed_set = new boolean[size][size];
 
-        target = new Node(t_x, t_y);
+        start = map[s_x][s_y];
+        target = map[t_x][t_y];
+
+        start.f_value = 0;
+        start.g_value = 0;
 
         open_set.insert(start);
         start.opened = true;
 
         while (!open_set.is_empty()) {
-            Node current = open_set.removemin();
-            closed_set[current.x][current.y] = true;
+            Node node = open_set.removemin();
+            closed_set[node.x][node.y] = true;
 
-            if (current.x == target.x && current.y == target.y) {
-                target = current;
+            if (node.x == target.x && node.y == target.y) {
+                target = node;
                 break;
             }
 
-            Stack neighbours = jump_neigbours(current);
-            while (!neighbours.is_empty()) {
-                Node n = neighbours.pop();
-                Node jumped_node = jump(current.x, current.y, n.x, n.y);
-
-                if (jumped_node != null) {
-
-                    if (closed_set[jumped_node.x][jumped_node.y]) {
-                        continue;
-                    }
-                    double h = euclidean(jumped_node.x, jumped_node.y, target.x, target.y);
-                    double cost = current.g_value + euclidean(jumped_node.x, jumped_node.y, current.x, current.y);
-
-                    if (!jumped_node.opened || cost < jumped_node.g_value) {
-                        jumped_node.f_value = 2 * h + cost;
-                        jumped_node.g_value = cost;
-                        jumped_node.previous = current;
-
-                        if (!jumped_node.opened) {
-                            open_set.insert(jumped_node);
-                            jumped_node.opened = true;
-                        } else {
-                            Node a = open_set.remove_middle(jumped_node);
-                            open_set.insert(jumped_node);
-
-                        }
-                    }
-
-                }
-            }
+            identify_successor(node);
         }
-
-        // let's backtrace it:
-        Stack s = new Stack(size * size);
+        
+        Stack s = new Stack(size*size);
         while (target.previous != null) {
             s.push(target);
             target = target.previous;
         }
 
 
-
         return s;
     }
 
-    /**
-     * Counts euclidean distance for heuristic
-     *
-     * @param x start x coordinate
-     * @param y start y coordinate
-     * @param tx target x coordinate
-     * @param ty target y coordinate
-     * @return returns distance
-     */
-    private double euclidean(int x, int y, int tx, int ty) {
-        int dx = Math.abs(x - tx);
-        int dy = Math.abs(y - ty);
-        return 1 * Math.sqrt(dx * dx + dy * dy);
+    private void identify_successor(Node node) {
+        int x = node.x;
+        int y = node.y;
+        Queue neighbours = find_neighbours(node);
+
+
+        while (!neighbours.is_empty()) {
+            Node neighbour = neighbours.dequeue();
+
+            int[] jump_coord = jump(neighbour.x, neighbour.y, x, y);
+
+            if (jump_coord != null && is_walkable(jump_coord[0], jump_coord[1])) {
+ 
+                int jx = jump_coord[0];
+                int jy = jump_coord[1];
+         
+                Node jump_point = map[jx][jy];
+
+                if (closed_set[jx][jy]) {
+                    continue;
+                }
+
+                // distance
+                double d = euclidean(Math.abs(jx - x), Math.abs(jy - y));
+                double ng = node.g_value + d;
+
+                if (!jump_point.opened || ng < jump_point.g_value) {
+                    jump_point.g_value = ng;
+                    jump_point.h_value = euclidean(Math.abs(jx - target.x), Math.abs(jy - target.y));
+                    jump_point.f_value = jump_point.g_value + jump_point.h_value;
+                    jump_point.previous = node;
+
+                    if (!jump_point.opened) {
+                        open_set.insert(jump_point);
+                        jump_point.opened = true;
+                    } else {
+                        open_set.remove_middle(jump_point);
+                        open_set.insert(jump_point);
+                    }
+                }
+            }
+
+        }
+
     }
 
-    /**
-     * Recursive function to find a jump node.
-     *
-     * @param cx this is current x coordinate
-     * @param cy this is current y coordinate
-     * @param nx this is next node x coordinate
-     * @param ny this is next node y coordinate
-     * @return Returns either jump node if found one or null.
-     */
-    private Node jump(int cx, int cy, int nx, int ny) {
-        int dx = nx - cx;
-        int dy = ny - cy;
-        // We get the direction of the jump
+    private double euclidean(int dx, int dy) {
+        return Math.sqrt(dx * dx + dy * dy);
+    }
 
-        if (!check_is_node(nx, ny)) {
+    private int[] jump(int x, int y, int px, int py) {
+
+        int dx = x - px;
+        int dy = y - py;
+
+        if (!is_walkable(x, y)) {
             return null;
-        } else if (nx == target.x && ny == target.y) {
-            return map[nx][ny];
+        } else if (x == target.x && y == target.y) {
+            return new int[]{x, y};
         }
 
-        // Check diagonal
-        if (dx != 0 && dy != 0) {
-            if (check_is_node(nx - dx, ny + dy) && !check_is_node(nx - dx, ny)
-                    || check_is_node(nx + dx, ny - dy) && !check_is_node(nx, ny - dy)) {
-                return map[nx][ny];
+        // check for forced neighbors
+        // along the diagonal
+        if (!(dx == 0 && dy == 0)) {
+            if ((is_walkable(x - dx, y + dy) && !is_walkable(x - dx, y))
+                    || (is_walkable(x + dx, y - dy) && !is_walkable(x, y - dy))) {
+                return new int[]{x, y};
             }
-        } else { // Horizontal / vertical
+        } else {
+            // horizontal/vertical
             if (dx != 0) {
-                if (check_is_node(nx + dx, ny + 1) && !check_is_node(nx, ny + 1)
-                        || check_is_node(nx + dx, ny - 1) && !check_is_node(nx, ny - 1)) {
-                    return map[nx][ny];
+                if ((is_walkable(x + dx, y + 1) && !is_walkable(x, y + 1))
+                        || (is_walkable(x + dx, y - 1) && !is_walkable(x, y - 1))) {
+                    return new int[]{x, y};
                 }
             } else {
-                if (check_is_node(nx + 1, ny + dy) && !check_is_node(nx + 1, ny)
-                        || check_is_node(nx - 1, ny + dy) && !check_is_node(nx - 1, ny)) {
-                    return map[nx][ny];
+                if ((is_walkable(x + 1, y + dy) && !is_walkable(x + 1, y))
+                        || (is_walkable(x - 1, y + dy) && !is_walkable(x - 1, y))) {
+                    return new int[]{x, y};
                 }
             }
         }
 
-        // Moving diagonally
-        if (dx != 0 && dy != 0) {
-            Node a = jump(nx, ny, nx + dx, ny);
-            Node b = jump(nx, ny, nx, ny + dy);
-            if (a != null) {
-                return a;
-            } else if (b != null) {
-                return b;
+        // when moving diagonal, check vertical/horizontal jump points
+        if (!(dx == 0 && dy == 0)) {
+            int[] jx = jump(x + dx, y, x, y);
+            int[] jy = jump(x, y + dy, x, y);
+            if (jx != null || jy != null) {
+                return new int[]{x, y};
             }
         }
+        if (dx == 0 && dy == 0) {
+            return new int[]{x,y};
+        } 
+            
 
-        // Movin vertical/horizontal
-        if (check_is_node(nx + dx, ny) || check_is_node(nx, ny + dy)) {
-            return jump(nx, ny, nx + dx, ny + dy);
+        //  moving diagonally, must make sure one of the vert/hor is open to allow path
+        if (is_walkable(x + dx, y) || is_walkable(x, y + dy)) {
+            return jump(x + dx, y + dy, x, y);
         } else {
             return null;
         }
 
-
     }
 
-    /**
-     * This is supposed to be a function for finding neighbours but is mess atm.
-     * skip this if reading.
-     *
-     * @param n node which neigbours we are looking for
-     * @return stack of neighbours
-     */
-    private Stack jump_neigbours(Node n) {
+    private Queue find_neighbours(Node n) {
+        Queue neighbours = new Queue(9);
         int x = n.x;
         int y = n.y;
+        Node parent = n.previous;
 
-        Stack ret = new Stack(10);
-
-        if (n.previous != null) {
-            int px = n.previous.x;
-            int py = n.previous.y;
+        // directed pruning can ignore neighbours unless forced.
+        if (parent != null) {
+            int px = parent.x;
+            int py = parent.y;
+            // normalized direction of travel
             int dx = (x - px) / Math.max(Math.abs(x - px), 1);
             int dy = (y - py) / Math.max(Math.abs(y - py), 1);
 
-            // diagonally         
+            // search diagonally
             if (dx != 0 && dy != 0) {
-                if (check_is_node(x, y + dy)) {
-                    create_n_stack__nodes(x, y + dy, ret);
+                if (is_walkable(x, y + dy)) {
+                    neighbours.enqueue(map[x][y + dy]);
                 }
-                if (check_is_node(x + dx, y)) {
-                    create_n_stack__nodes(x + dx, y, ret);
+                if (is_walkable(x + dx, y)) {
+                    neighbours.enqueue(map[x + dx][y]);
                 }
-                if (check_is_node(x, y + dy) || check_is_node(x + dx, y)) {
-                    create_n_stack__nodes(x + dx, y + dy, ret);
+                if (is_walkable(x, y + dy) || is_walkable(x + dx, y)) {
+                    if (is_walkable(x + dx, y + dy)) {
+                        neighbours.enqueue(map[x + dx][y + dy]);
+                    }
                 }
-                if (check_is_node(x - dx, y) && check_is_node(x, y + dy)) {
-                    create_n_stack__nodes(x - dx, y + dy, ret);
+                if (!is_walkable(x - dx, y) && is_walkable(x, y + dy)) {
+                    if (is_walkable(x - dx, y + dy)) {
+                        neighbours.enqueue(map[x - dx][y + dy]);
+                    }
                 }
-                if (check_is_node(x, y - dy) && check_is_node(x + dx, y)) {
-                    create_n_stack__nodes(x + dx, y - dy, ret);
+                if (!is_walkable(x, y - dy) && is_walkable(x + dx, y)) {
+                    if (is_walkable(x + dx, y - dy)) {
+                        neighbours.enqueue(map[x + dx][y - dy]);
+                    }
                 }
-
             } else {
+                // horizontal vertical
                 if (dx == 0) {
-                    if (check_is_node(x, y + dy)) {
-                        if (check_is_node(x, y + dy)) {
-                            create_n_stack__nodes(x, y + dy, ret);
+                    if (is_walkable(x, y + dy)) {
+                        if (is_walkable(x, y + dy)) {
+                            neighbours.enqueue(map[x][y + dy]);
                         }
-                        if (!check_is_node(x + 1, y)) {
-                            create_n_stack__nodes(x + 1, y + dy, ret);
+                        if (!is_walkable(x + 1, y)) {
+                            if (is_walkable(x + 1, y + dy)) {
+                                neighbours.enqueue(map[x - 1][y + dy]);
+                            }
                         }
-                        if (!check_is_node(x - 1, y)) {
-                            create_n_stack__nodes(x - 1, y + dy, ret);
+                        if (!is_walkable(x - 1, y)) {
+                            if (is_walkable(x - 1, y + dy)) {
+                                neighbours.enqueue(map[x - 1][y + dy]);
+                            }
                         }
                     }
                 } else {
-                    if (check_is_node(x + dx, y)) {
-                        if (check_is_node(x + dx, y)) {
-                            create_n_stack__nodes(x + dx, y, ret);
+                    if (is_walkable(x + dx, y)) {
+                        if (is_walkable(x + dx, y)) {
+                            neighbours.enqueue(map[x + dx][y]);
                         }
-                        if (!check_is_node(x, y + 1)) {
-                            create_n_stack__nodes(x + dx, y + 1, ret);
+                        if (!is_walkable(x, y + 1)) {
+                            if (is_walkable(x + dx, y + 1)) {
+                                neighbours.enqueue(map[x + dx][y + 1]);
+                            }
                         }
-                        if (!check_is_node(x, y - 1)) {
-                            create_n_stack__nodes(x + dx, y - 1, ret);
+                        if (!is_walkable(x, y - 1)) {
+                            if (is_walkable(x + dx, y - 1)) {
+                                neighbours.enqueue(map[x + dx][y - 1]);
+                            }
                         }
                     }
                 }
             }
-
         } else {
+            // was not parent, return all neighbours:
             return get_neighbours(n);
         }
-        return ret;
 
+        return neighbours;
     }
 
-    /**
-     * Finds neigbours for node N
-     *
-     * @param n node to find neighbours
-     * @return returns stack of neighbours.
-     */
-    private Stack get_neighbours(Node n) {
-        Stack ret = new Stack(8);
-        if (check_is_node(n.x + 1, n.y)) {
-            create_n_stack__nodes(n.x + 1, n.y, ret);
+    private boolean is_walkable(int x, int y) {
+        if (x >= 0 && y >= 0 && x < closed_set.length && y < closed_set.length && grid[x][y] != 9) {
+            return true;
         }
-        if (check_is_node(n.x, n.y + 1)) {
-            create_n_stack__nodes(n.x, n.y + 1, ret);
+        return false;
+    }
+
+    private Queue get_neighbours(Node n) {
+        Queue ret = new Queue(map.length * map.length);
+        if (is_walkable(n.x + 1, n.y)) {
+            ret.enqueue(map[n.x + 1][n.y]);
         }
-        if (check_is_node(n.x - 1, n.y)) {
-            create_n_stack__nodes(n.x - 1, n.y, ret);
+        if (is_walkable(n.x, n.y + 1)) {
+            ret.enqueue(map[n.x][n.y + 1]);
         }
-        if (check_is_node(n.x, n.y - 1)) {
-            create_n_stack__nodes(n.x, n.y - 1, ret);
+        if (is_walkable(n.x - 1, n.y)) {
+            ret.enqueue(map[n.x - 1][n.y]);
+        }
+        if (is_walkable(n.x, n.y - 1)) {
+            ret.enqueue(map[n.x][n.y - 1]);
         }
         /*
          * Above are vertical and horizontal nodes.
          * Below diagonal.
          */
-        if (check_is_node(n.x - 1, n.y - 1)) {
-            create_n_stack__nodes(n.x - 1, n.y - 1, ret);
+        if (is_walkable(n.x - 1, n.y - 1)) {
+            ret.enqueue(map[n.x - 1][n.y - 1]);
         }
-        if (check_is_node(n.x - 1, n.y + 1)) {
-            create_n_stack__nodes(n.x - 1, n.y + 1, ret);
+        if (is_walkable(n.x - 1, n.y + 1)) {
+            ret.enqueue(map[n.x - 1][n.y + 1]);
         }
-        if (check_is_node(n.x + 1, n.y - 1)) {
-            create_n_stack__nodes(n.x + 1, n.y - 1, ret);
+        if (is_walkable(n.x + 1, n.y - 1)) {
+            ret.enqueue(map[n.x + 1][n.y - 1]);
         }
-        if (check_is_node(n.x + 1, n.y + 1)) {
-            create_n_stack__nodes(n.x + 1, n.y + 1, ret);
+        if (is_walkable(n.x + 1, n.y + 1)) {
+            ret.enqueue(map[n.x + 1][n.y + 1]);
         }
         return ret;
 
-    }
-
-    /**
-     * We add given node from map to stack to be returned as neighbour. If node
-     * is not in the map yet we create a new one.
-     *
-     * @param x coordinate of node
-     * @param y coordinate of node
-     * @param s stack for adding nodes.
-     */
-    private void create_n_stack__nodes(int x, int y, Stack s) {
-        if (map[x][y] == null) {
-            map[x][y] = new Node(x, y);
-        }
-        s.push(map[x][y]);
-
-    }
-
-    /**
-     * Checks if coordinates are in bounds of grid and is traversable node.
-     * Returns true if in bounds.
-     */
-    private boolean check_is_node(int x, int y) {
-        if (x >= 0 && y >= 0 && x < closed_set.length && y < closed_set.length && grid[x][y] != 9) {
-            return true;
-        }
-        return false;
     }
 }
