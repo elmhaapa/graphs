@@ -41,9 +41,10 @@ public class JumpPointSearchTest {
     public void setUp() {
         jps = new JumpPointSearch();
         a = new Astar();
-        grid = new int[30][30];
-        startx = 30;
-        starty = 30/2;
+        int size = 100;
+        grid = new int[size][size];
+        startx = size-1;
+        starty = size/2;
     }
     
     @After
@@ -70,16 +71,16 @@ public class JumpPointSearchTest {
     public void testTime() {
         // Let's assume JPS should take less time then A* and test it.
         
-        long startT = System.currentTimeMillis();
+        long startT = System.nanoTime();
         Stack star_stack = a.get_shortest_path(grid, startx, starty, 0, 0);
-        long finishT = System.currentTimeMillis();
+        long finishT = System.nanoTime();
         long star_time = finishT - startT;
         
-        startT = System.currentTimeMillis();
+        startT = System.nanoTime();
         Stack jps_stack = jps.get_shortest_path(startx, starty, 0, 0, grid);
-        finishT = System.currentTimeMillis();
+        finishT = System.nanoTime();
         long jps_time = finishT - startT;
         
-        assertEquals((jps_time < star_time) , true);
+        assertEquals(true, (jps_time <= star_time));
     }
 }

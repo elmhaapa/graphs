@@ -65,7 +65,8 @@ public class PriorityqueueTest {
         
         for (int i = 1; i <= 20; ++i) {
             Node n = q.removemin();
-            assertEquals(i, n.f_value);
+
+            assertEquals(i, (int)n.f_value);
         } 
         
    //     assertEquals(1, q.removemin().f_value);

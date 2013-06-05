@@ -2,21 +2,25 @@
 package datastructures;
 
 /**
- *
+ * Queue for integer tables. 
  * 
  */
 public class Queue {
-    private Node[] Q;
+    private int[][] Q;
     private int head;
     private int tail;
     
     public Queue(int max_size) {
-      Q = new Node[max_size];
+      Q = new int[max_size][2];
       head = 0;
       tail = 0;
     }
     
-    public void enqueue(Node n) {
+    /**
+     * Enqueue integer array.
+     * @param n new element (integer array).
+     */
+    public void enqueue(int[] n) {
         Q[tail] = n;
         if (tail == Q.length-1) {
             tail = 0;
@@ -24,9 +28,17 @@ public class Queue {
             tail++;
         }
     }
+    /**
+     * Returns true if queue empty
+     * @return boolean
+     */
     public boolean is_empty() {
         return head == tail;
     }
+    /**
+     * Returns the size of queue
+     * @return size
+     */
     public int size() {
         int i = head;
         while (true) {
@@ -39,8 +51,12 @@ public class Queue {
             }
         }
     }
-    public Node dequeue() {
-        Node n = Q[head];
+    /**
+     * Get first element.
+     * @return first element.
+     */
+    public int[] dequeue() {
+        int[] n = Q[head];
         if (head == Q.length-1) {
             head = 0;
         } else {
@@ -48,8 +64,11 @@ public class Queue {
         }
         return n;
     }
+    /**
+     * If queue fills up we double the size.
+     */
     private void double_up() {
-        Node[] tmp = new Node[Q.length*2];
+        int[][] tmp = new int[Q.length*2][2];
         for (int i = 0; i < Q.length; ++i) {
             tmp[i] = Q[i];
         }

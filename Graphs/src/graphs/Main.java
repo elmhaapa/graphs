@@ -9,7 +9,6 @@ import shortestPAlgorithms.JumpPointSearch;
 
 public class Main {
 
-    
     private static int[] random_points(int size) {
         int[] points = new int[2];
         points[0] = (int) ((Math.random() * 100) % size);
@@ -29,7 +28,7 @@ public class Main {
      */
     private static int[][] build_grid(int size) {
         int[][] grid = new int[size][size];
-        
+
         for (int i = 0; i < size - 1; ++i) {
             boolean set = false;
             while (!set) {
@@ -40,15 +39,43 @@ public class Main {
                 }
             }
         }
-        
+
         return grid;
+    }
+
+    private static void calc_average(int amount, int size) {
+        int i = 0;
+        long a_sum = 0;
+        long jps_sum = 0;
+        Astar star = new Astar();
+        JumpPointSearch jps = new JumpPointSearch();
+        int sx = size-1;
+        int sy = size/2;
+        int tx = 0;
+        int ty = 0;
+        while (i < amount) {
+            int[][] grid = build_grid(size);
+            long startTime = System.nanoTime();
+            Stack s = star.get_shortest_path(grid, sx, sy, tx, ty);
+            long endTime = System.nanoTime();
+            a_sum = a_sum + (endTime - startTime);
+            
+            startTime = System.nanoTime();
+            s = jps.get_shortest_path(sx,sy,tx,ty,grid);
+            endTime = System.nanoTime();
+            jps_sum = jps_sum + (endTime - startTime);
+            i++;
+
+        }
+        System.out.println("Average: a*: " + a_sum/amount + " jps: " + jps_sum/amount);
     }
 
     public static void main(String[] args) throws InterruptedException {
         /*
          * Some test to check how everything works.
          */
-        
+
+
 
         int size_of_map = 30;
         int[][] grid = build_grid(size_of_map);
@@ -60,40 +87,41 @@ public class Main {
         a.change_color(tahti_x, tahti_y, 2);
 
         int[] r_target_points = random_points(size_of_map);
-        
-        long startTime = System.currentTimeMillis();
+
+        long startTime = System.nanoTime();
         Stack s = tahti.get_shortest_path(grid, tahti_x, tahti_y,
-                0, 0);        
-        
-        long endTime = System.currentTimeMillis();
+                0, 0);
+
+        long endTime = System.nanoTime();
         long difference = endTime - startTime;
-        System.out.println("A* MS: " + difference + " Size: " + s.size() );
-        
+        System.out.println("A* MS: " + difference + " Size: " + s.size());
+
         while (!s.is_empty()) {
             Node p = s.pop();
             a.change_color(p.x, p.y, 2);
         }
-        
+
         JumpPointSearch jps = new JumpPointSearch();
-        startTime = System.currentTimeMillis();
+        startTime = System.nanoTime();
         s = jps.get_shortest_path(tahti_x, tahti_y, 0, 0, grid);
-        endTime = System.currentTimeMillis();
+        endTime = System.nanoTime();
         difference = endTime - startTime;
         System.out.println("JPS MS: " + difference + " Size :" + s.size());
-        
+
         while (!s.is_empty()) {
             Node p = s.pop();
-         //   Thread.sleep(500);
-            a.change_color(p.x, p.y, 3);        
+            //   Thread.sleep(500);
+            a.change_color(p.x, p.y, 3);
         }
-        
-        
+        calc_average(20, 30);
+
+
         /*
-        int[][] t = new int[][] { {1,1}, {1,3}, {1,5}, {3,5}, {5,5}, {5,3}, {5,1}, {3,1}};
+         int[][] t = new int[][] { {1,1}, {1,3}, {1,5}, {3,5}, {5,5}, {5,3}, {5,1}, {3,1}};
         
-        for (int i = 0; i < t.length; ++i) {
-            System.out.println((3-t[i][0]) + " " + (3- t[i][1]));
-        }
-        */
+         for (int i = 0; i < t.length; ++i) {
+         System.out.println((3-t[i][0]) + " " + (3- t[i][1]));
+         }
+         */
     }
 }

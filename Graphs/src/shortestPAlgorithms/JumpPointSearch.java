@@ -21,11 +21,9 @@ public class JumpPointSearch {
     private Node target;
     private Node[][] map;
     private int[][] grid;
-    private Node last_jp;
 
-    /**
-     * Initialize nodes in map. We are supposed to not need this in the end.
-     */
+ 
+    /*
     private void initialize_map() {
         for (int i = 0; i < map.length; ++i) {
             for (int j = 0; j < map.length; ++j) {
@@ -34,30 +32,31 @@ public class JumpPointSearch {
             }
         }
     }
+    */
 
     /**
-     * Gets shortest path between two points. (atm doesn't find the optimal)
+     * Shortest path between two points.
      *
-     * @param s_x starting point's x coordinate.
-     * @param s_y starting point's y coordinate.
-     * @param t_x target point's x
-     * @param t_y target point's y
-     * @return return a stack of nodes which is route from start to target.
-     * first step at the top.
+     * @param s_x start x coordinate
+     * @param s_y start y coordinate
+     * @param t_x target x coordinate
+     * @param t_y target y coordinate
+     * @param grid integer array representation of map. 0 is a node.
+     * @return Stack of nodes representing optimal path. Top node first step.
      */
     public Stack get_shortest_path(int s_x, int s_y, int t_x, int t_y, int[][] grid) {
         this.grid = grid;
         map = new Node[grid.length][grid.length];
-        initialize_map();
+      //  initialize_map();
         int size = grid.length;
         open_set = new Priorityqueue(size * size);
         closed_set = new boolean[size][size];
 
+        map[s_x][s_y] = new Node(s_x,s_y);
+        map[t_x][t_y] = new Node(t_x,t_y);
         start = map[s_x][s_y];
         target = map[t_x][t_y];
 
-        start.f_value = 0;
-        start.g_value = 0;
 
         open_set.insert(start);
         start.opened = true;
@@ -73,8 +72,8 @@ public class JumpPointSearch {
 
             identify_successor(node);
         }
-        
-        Stack s = new Stack(size*size);
+
+        Stack s = new Stack(size * size);
         while (target.previous != null) {
             s.push(target);
             target = target.previous;
@@ -84,6 +83,12 @@ public class JumpPointSearch {
         return s;
     }
 
+    /**
+     * Takes node with lowest f-value and pushes it's successors into priority
+     * queue.
+     *
+     * @param node current node
+     */
     private void identify_successor(Node node) {
         int x = node.x;
         int y = node.y;
@@ -91,15 +96,18 @@ public class JumpPointSearch {
 
 
         while (!neighbours.is_empty()) {
-            Node neighbour = neighbours.dequeue();
+            int[] neighbour = neighbours.dequeue();
 
-            int[] jump_coord = jump(neighbour.x, neighbour.y, x, y);
+            int[] jump_coord = jump(neighbour[0], neighbour[1], x, y);
 
             if (jump_coord != null && is_walkable(jump_coord[0], jump_coord[1])) {
- 
+
                 int jx = jump_coord[0];
                 int jy = jump_coord[1];
-         
+
+                if (map[jx][jy] == null) {
+                    map[jx][jy] = new Node(jx, jy);
+                }
                 Node jump_point = map[jx][jy];
 
                 if (closed_set[jx][jy]) {
@@ -130,10 +138,25 @@ public class JumpPointSearch {
 
     }
 
+    /**
+     * Calculates Euclidean heuristic.
+     *
+     * @param dx
+     * @param dy
+     * @return
+     */
     private double euclidean(int dx, int dy) {
         return Math.sqrt(dx * dx + dy * dy);
     }
 
+    /**
+     *
+     * @param x
+     * @param y
+     * @param px
+     * @param py
+     * @return
+     */
     private int[] jump(int x, int y, int px, int py) {
 
         int dx = x - px;
@@ -175,10 +198,12 @@ public class JumpPointSearch {
                 return new int[]{x, y};
             }
         }
+        
         if (dx == 0 && dy == 0) {
-            return new int[]{x,y};
-        } 
-            
+            return new int[]{x, y};
+        }
+        
+
 
         //  moving diagonally, must make sure one of the vert/hor is open to allow path
         if (is_walkable(x + dx, y) || is_walkable(x, y + dy)) {
@@ -189,8 +214,17 @@ public class JumpPointSearch {
 
     }
 
+    /**
+     * Finds neighbours for current node. We can use pruning rules of JPS if
+     * this is not start node.
+     *
+     * @param n current node.
+     * @return Queue of nodes.
+     */
     private Queue find_neighbours(Node n) {
+        
         Queue neighbours = new Queue(9);
+   
         int x = n.x;
         int y = n.y;
         Node parent = n.previous;
@@ -206,24 +240,24 @@ public class JumpPointSearch {
             // search diagonally
             if (dx != 0 && dy != 0) {
                 if (is_walkable(x, y + dy)) {
-                    neighbours.enqueue(map[x][y + dy]);
+                    neighbours.enqueue(new int[]{x, y + dy});
                 }
                 if (is_walkable(x + dx, y)) {
-                    neighbours.enqueue(map[x + dx][y]);
+                    neighbours.enqueue(new int[]{x + dx, y});
                 }
                 if (is_walkable(x, y + dy) || is_walkable(x + dx, y)) {
                     if (is_walkable(x + dx, y + dy)) {
-                        neighbours.enqueue(map[x + dx][y + dy]);
+                        neighbours.enqueue(new int[]{x + dx, y + dy});
                     }
                 }
                 if (!is_walkable(x - dx, y) && is_walkable(x, y + dy)) {
                     if (is_walkable(x - dx, y + dy)) {
-                        neighbours.enqueue(map[x - dx][y + dy]);
+                        neighbours.enqueue(new int[]{x - dx, y + dy});
                     }
                 }
                 if (!is_walkable(x, y - dy) && is_walkable(x + dx, y)) {
                     if (is_walkable(x + dx, y - dy)) {
-                        neighbours.enqueue(map[x + dx][y - dy]);
+                        neighbours.enqueue(new int[]{x + dx, y - dy});
                     }
                 }
             } else {
@@ -231,45 +265,52 @@ public class JumpPointSearch {
                 if (dx == 0) {
                     if (is_walkable(x, y + dy)) {
                         if (is_walkable(x, y + dy)) {
-                            neighbours.enqueue(map[x][y + dy]);
+                            neighbours.enqueue(new int[]{x, y + dy});
                         }
                         if (!is_walkable(x + 1, y)) {
                             if (is_walkable(x + 1, y + dy)) {
-                                neighbours.enqueue(map[x - 1][y + dy]);
+                                neighbours.enqueue(new int[]{x - 1, y + dy});
                             }
                         }
                         if (!is_walkable(x - 1, y)) {
                             if (is_walkable(x - 1, y + dy)) {
-                                neighbours.enqueue(map[x - 1][y + dy]);
+                                neighbours.enqueue(new int[]{x - 1, y + dy});
                             }
                         }
                     }
                 } else {
                     if (is_walkable(x + dx, y)) {
                         if (is_walkable(x + dx, y)) {
-                            neighbours.enqueue(map[x + dx][y]);
+                            neighbours.enqueue(new int[]{x + dx, y});
                         }
                         if (!is_walkable(x, y + 1)) {
                             if (is_walkable(x + dx, y + 1)) {
-                                neighbours.enqueue(map[x + dx][y + 1]);
+                                neighbours.enqueue(new int[]{x + dx, y + 1});
                             }
                         }
                         if (!is_walkable(x, y - 1)) {
                             if (is_walkable(x + dx, y - 1)) {
-                                neighbours.enqueue(map[x + dx][y - 1]);
+                                neighbours.enqueue(new int[]{x + dx, y - 1});
                             }
                         }
                     }
                 }
             }
         } else {
-            // was not parent, return all neighbours:
+            // There was no parent. This is start node. Return all neighbours.
             return get_neighbours(n);
         }
 
         return neighbours;
     }
 
+    /**
+     * Check if given coordinates are on the map and is a node.
+     *
+     * @param x coordinate
+     * @param y coordinate
+     * @return true if is walkable square (node).
+     */
     private boolean is_walkable(int x, int y) {
         if (x >= 0 && y >= 0 && x < closed_set.length && y < closed_set.length && grid[x][y] != 9) {
             return true;
@@ -277,35 +318,44 @@ public class JumpPointSearch {
         return false;
     }
 
+    /**
+     * Unlike find_neighbours this return all 8 neighbours if they are on the
+     * map and are nodes.
+     *
+     * @param n current node.
+     * @return Queue of all possible neighbours.
+     */
     private Queue get_neighbours(Node n) {
-        Queue ret = new Queue(map.length * map.length);
+   //     int[][] ret = new int[8][2];
+        
+       Queue ret = new Queue(9);
         if (is_walkable(n.x + 1, n.y)) {
-            ret.enqueue(map[n.x + 1][n.y]);
+            ret.enqueue(new int[]{n.x + 1, n.y});
         }
         if (is_walkable(n.x, n.y + 1)) {
-            ret.enqueue(map[n.x][n.y + 1]);
+            ret.enqueue(new int[]{n.x, n.y + 1});
         }
         if (is_walkable(n.x - 1, n.y)) {
-            ret.enqueue(map[n.x - 1][n.y]);
+            ret.enqueue(new int[]{n.x - 1, n.y});
         }
         if (is_walkable(n.x, n.y - 1)) {
-            ret.enqueue(map[n.x][n.y - 1]);
+            ret.enqueue(new int[]{n.x, n.y - 1});
         }
         /*
          * Above are vertical and horizontal nodes.
          * Below diagonal.
          */
         if (is_walkable(n.x - 1, n.y - 1)) {
-            ret.enqueue(map[n.x - 1][n.y - 1]);
+            ret.enqueue(new int[]{n.x - 1, n.y - 1});
         }
         if (is_walkable(n.x - 1, n.y + 1)) {
-            ret.enqueue(map[n.x - 1][n.y + 1]);
+            ret.enqueue(new int[]{n.x - 1, n.y + 1});
         }
         if (is_walkable(n.x + 1, n.y - 1)) {
-            ret.enqueue(map[n.x + 1][n.y - 1]);
+            ret.enqueue(new int[]{n.x + 1, n.y - 1});
         }
         if (is_walkable(n.x + 1, n.y + 1)) {
-            ret.enqueue(map[n.x + 1][n.y + 1]);
+            ret.enqueue(new int[]{n.x + 1, n.y + 1});
         }
         return ret;
 
