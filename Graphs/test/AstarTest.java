@@ -47,13 +47,11 @@ public class AstarTest {
     @Test
     public void shortestPath() {
         Stack s = a.get_shortest_path(grid, 0, 0, 3, 3);
-        int steps = 0;
-        while ( !s.is_empty() ) {
-            s.pop();
-            steps++;
-        }
-     assertEquals(6, steps); 
+        int steps = s.size();
+        
+     assertEquals(3, steps); 
     }
+    
     
     @Test
     public void shortestPath2() {
@@ -61,13 +59,11 @@ public class AstarTest {
         int y = (int) (100*Math.random() % 30);
         Stack s = a.get_shortest_path(grid, 0, 0, x, y);
         int exp_result = x + y;
-        int steps = 0;
-        while (!s.is_empty()) {
-            s.pop();
-            steps++;        
-        }
+        int steps = s.size();
+        
         assertEquals(exp_result, steps);
     }
+    
     @Test
     public void correctLastStep() {
         Astar a = new Astar();

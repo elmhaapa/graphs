@@ -19,6 +19,7 @@ public class Astar {
     private int size;
     private Node[][] map;
     private int[][] grid;
+    private int nv;
 
     /**
      * Gets shortest path between two points using a* shortest path algorithm.
@@ -54,6 +55,7 @@ public class Astar {
         while (!open_set.is_empty()) {
 
             Node current = open_set.removemin();
+            nv++;
             // Node with smallest f_value.
             closed_set[current.x][current.y] = true;
 
@@ -76,7 +78,7 @@ public class Astar {
             s.push(new Node(target.x, target.y));
             target = target.previous;
         }
-
+        System.out.println("a* nv: " + nv);
         return s;
     }
 

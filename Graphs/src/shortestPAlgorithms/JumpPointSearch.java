@@ -21,19 +21,18 @@ public class JumpPointSearch {
     private Node target;
     private Node[][] map;
     private int[][] grid;
+    private int nv;
 
- 
     /*
-    private void initialize_map() {
-        for (int i = 0; i < map.length; ++i) {
-            for (int j = 0; j < map.length; ++j) {
-                map[i][j] = new Node(i, j);
-                // map[i][j].g_value = euclidean(i, j, start.x, start.y);
-            }
-        }
-    }
-    */
-
+     private void initialize_map() {
+     for (int i = 0; i < map.length; ++i) {
+     for (int j = 0; j < map.length; ++j) {
+     map[i][j] = new Node(i, j);
+     // map[i][j].g_value = euclidean(i, j, start.x, start.y);
+     }
+     }
+     }
+     */
     /**
      * Shortest path between two points.
      *
@@ -47,13 +46,13 @@ public class JumpPointSearch {
     public Stack get_shortest_path(int s_x, int s_y, int t_x, int t_y, int[][] grid) {
         this.grid = grid;
         map = new Node[grid.length][grid.length];
-      //  initialize_map();
+        //  initialize_map();
         int size = grid.length;
         open_set = new Priorityqueue(size * size);
         closed_set = new boolean[size][size];
 
-        map[s_x][s_y] = new Node(s_x,s_y);
-        map[t_x][t_y] = new Node(t_x,t_y);
+        map[s_x][s_y] = new Node(s_x, s_y);
+        map[t_x][t_y] = new Node(t_x, t_y);
         start = map[s_x][s_y];
         target = map[t_x][t_y];
 
@@ -63,6 +62,7 @@ public class JumpPointSearch {
 
         while (!open_set.is_empty()) {
             Node node = open_set.removemin();
+            nv++;
             closed_set[node.x][node.y] = true;
 
             if (node.x == target.x && node.y == target.y) {
@@ -78,8 +78,7 @@ public class JumpPointSearch {
             s.push(target);
             target = target.previous;
         }
-
-
+        System.out.println("jps nv: " + nv);
         return s;
     }
 
@@ -138,25 +137,12 @@ public class JumpPointSearch {
 
     }
 
-    /**
-     * Calculates Euclidean heuristic.
-     *
-     * @param dx
-     * @param dy
-     * @return
-     */
+ 
     private double euclidean(int dx, int dy) {
         return Math.sqrt(dx * dx + dy * dy);
     }
 
-    /**
-     *
-     * @param x
-     * @param y
-     * @param px
-     * @param py
-     * @return
-     */
+
     private int[] jump(int x, int y, int px, int py) {
 
         int dx = x - px;
@@ -198,19 +184,22 @@ public class JumpPointSearch {
                 return new int[]{x, y};
             }
         }
-        
+
         if (dx == 0 && dy == 0) {
             return new int[]{x, y};
         }
-        
 
 
-        //  moving diagonally, must make sure one of the vert/hor is open to allow path
-        if (is_walkable(x + dx, y) || is_walkable(x, y + dy)) {
+
+
+      //  if (is_walkable(x + dx, y) || is_walkable(x, y + dy)) {
             return jump(x + dx, y + dy, x, y);
+            /*
         } else {
             return null;
+
         }
+        */
 
     }
 
@@ -222,9 +211,9 @@ public class JumpPointSearch {
      * @return Queue of nodes.
      */
     private Queue find_neighbours(Node n) {
-        
+
         Queue neighbours = new Queue(9);
-   
+
         int x = n.x;
         int y = n.y;
         Node parent = n.previous;
@@ -326,9 +315,9 @@ public class JumpPointSearch {
      * @return Queue of all possible neighbours.
      */
     private Queue get_neighbours(Node n) {
-   //     int[][] ret = new int[8][2];
-        
-       Queue ret = new Queue(9);
+        //     int[][] ret = new int[8][2];
+
+        Queue ret = new Queue(9);
         if (is_walkable(n.x + 1, n.y)) {
             ret.enqueue(new int[]{n.x + 1, n.y});
         }

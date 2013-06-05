@@ -53,21 +53,23 @@ public class Main {
         int sy = size/2;
         int tx = 0;
         int ty = 0;
+        long startTime;
+        long endTime;
         while (i < amount) {
             int[][] grid = build_grid(size);
-            long startTime = System.nanoTime();
+            startTime = System.currentTimeMillis();
             Stack s = star.get_shortest_path(grid, sx, sy, tx, ty);
-            long endTime = System.nanoTime();
+            endTime = System.currentTimeMillis();
             a_sum = a_sum + (endTime - startTime);
             
-            startTime = System.nanoTime();
-            s = jps.get_shortest_path(sx,sy,tx,ty,grid);
-            endTime = System.nanoTime();
+            startTime = System.currentTimeMillis();
+            Stack b = jps.get_shortest_path(sx,sy,tx,ty,grid);
+            endTime = System.currentTimeMillis();
             jps_sum = jps_sum + (endTime - startTime);
             i++;
 
         }
-        System.out.println("Average: a*: " + a_sum/amount + " jps: " + jps_sum/amount);
+        System.out.println("Average: a*: " + ((double)a_sum)/amount + " jps: " + ((double)jps_sum)/amount);
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -77,7 +79,7 @@ public class Main {
 
 
 
-        int size_of_map = 30;
+        int size_of_map = 20;
         int[][] grid = build_grid(size_of_map);
         Window a = new Window(grid);
         //     Runner v = new Runner(size_of_map);
@@ -86,7 +88,7 @@ public class Main {
         int tahti_y = size_of_map / 2;
         a.change_color(tahti_x, tahti_y, 2);
 
-        int[] r_target_points = random_points(size_of_map);
+   //     int[] r_target_points = random_points(size_of_map);
 
         long startTime = System.nanoTime();
         Stack s = tahti.get_shortest_path(grid, tahti_x, tahti_y,
@@ -113,7 +115,7 @@ public class Main {
             //   Thread.sleep(500);
             a.change_color(p.x, p.y, 3);
         }
-        calc_average(20, 30);
+    //    calc_average(20, 100);
 
 
         /*
