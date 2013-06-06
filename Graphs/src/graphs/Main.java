@@ -117,7 +117,7 @@ public class Main {
             //   Thread.sleep(500);
             a.change_color(p.x, p.y, 3);
         }
-      //  calc_average(10, 100);
+        calc_average(10, 100);
 
 
         /*

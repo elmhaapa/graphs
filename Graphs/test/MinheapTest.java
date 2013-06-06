@@ -16,11 +16,11 @@ import static org.junit.Assert.*;
  *
  * 
  */
-public class PriorityqueueTest {
+public class MinheapTest {
     
     Minheap q;
     
-    public PriorityqueueTest() {
+    public MinheapTest() {
     }
     
     @BeforeClass

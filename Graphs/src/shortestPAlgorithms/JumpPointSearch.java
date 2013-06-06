@@ -79,7 +79,7 @@ public class JumpPointSearch {
             s.push(target);
             target = target.previous;
         }
-        System.out.println("jps nv: " + nv);
+        //  System.out.println("jps nv: " + nv);
         return s;
     }
 
@@ -110,9 +110,11 @@ public class JumpPointSearch {
                 }
                 Node jump_point = map[jx][jy];
 
+                
                 if (closed_set[jx][jy]) {
                     continue;
                 }
+                
 
                 // distance
                 double d = euclidean(Math.abs(jx - x), Math.abs(jy - y));
@@ -165,8 +167,8 @@ public class JumpPointSearch {
      */
     private int[] jump(int x, int y, int px, int py) {
 
-        int dx = x - px;
-        int dy = y - py;
+        int dx = (x - px)/Math.max(Math.abs(x-px),1);
+        int dy = (y - py)/Math.max(Math.abs(y-py),1);
 
 
         if (!is_walkable(x, y)) {
@@ -209,11 +211,11 @@ public class JumpPointSearch {
         }
 
 
-        /*
-         if (dx == 0 && dy == 0) {
-         return new int[] {x,y};
-         }
-         */
+
+        if (dx == 0 && dy == 0) {
+            return new int[]{x, y};
+        }
+
 
 
         /*
