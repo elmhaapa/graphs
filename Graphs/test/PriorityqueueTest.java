@@ -4,7 +4,7 @@
  */
 
 import datastructures.Node;
-import datastructures.Priorityqueue;
+import datastructures.Minheap;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
  */
 public class PriorityqueueTest {
     
-    Priorityqueue q;
+    Minheap q;
     
     public PriorityqueueTest() {
     }
@@ -33,7 +33,7 @@ public class PriorityqueueTest {
     
     @Before
     public void setUp() {
-        q = new Priorityqueue(40);
+        q = new Minheap(40);
     }
     
     @After

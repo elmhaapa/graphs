@@ -3,7 +3,7 @@ package graphs;
 import gui.Window;
 import shortestPAlgorithms.Astar;
 import datastructures.Node;
-import datastructures.Priorityqueue;
+import datastructures.Minheap;
 import datastructures.Stack;
 import shortestPAlgorithms.JumpPointSearch;
 
@@ -54,8 +54,9 @@ public class Main {
         int ty = 0;
         long startTime;
         long endTime;
-        int[][] grid = build_grid(size);
+        
         while (i < amount) {
+            int[][] grid = build_grid(size);
             startTime = System.currentTimeMillis();
             Astar star = new Astar();
             Stack s = star.get_shortest_path(grid, sx, sy, tx, ty);
@@ -91,11 +92,11 @@ public class Main {
 
         //     int[] r_target_points = random_points(size_of_map);
 
-        long startTime = System.nanoTime();
+        long startTime = System.currentTimeMillis();
         Stack s = tahti.get_shortest_path(grid, tahti_x, tahti_y,
                 0, 0);
 
-        long endTime = System.nanoTime();
+        long endTime = System.currentTimeMillis();
         long difference = endTime - startTime;
         System.out.println("A* MS: " + difference + " Size: " + s.size());
 
@@ -105,9 +106,9 @@ public class Main {
         }
 
         JumpPointSearch jps = new JumpPointSearch();
-        startTime = System.nanoTime();
+        startTime = System.currentTimeMillis();
         s = jps.get_shortest_path(tahti_x, tahti_y, 0, 0, grid);
-        endTime = System.nanoTime();
+        endTime = System.currentTimeMillis();
         difference = endTime - startTime;
         System.out.println("JPS MS: " + difference + " Size :" + s.size());
 
@@ -116,7 +117,7 @@ public class Main {
             //   Thread.sleep(500);
             a.change_color(p.x, p.y, 3);
         }
-        calc_average(500, 20);
+      //  calc_average(10, 100);
 
 
         /*

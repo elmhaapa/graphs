@@ -21,7 +21,10 @@ public class Stack {
     }
     
     
-    
+    /**
+     * Returns true if stack empty.
+     * @return boolean
+     */
     public boolean is_empty() {
         return size == 0;
     }
@@ -48,6 +51,10 @@ public class Stack {
         size--;
         return stack[size+1];
     }
+    /**
+     * Returns number of elements in stack.
+     * @return integer
+     */
     public int size() {
         return size;
     }

@@ -6,13 +6,13 @@ package datastructures;
  * comparing f_values.
  */
 
-public class Priorityqueue {
+public class Minheap {
     
     private Node[] heap;
     int max_size;
     int size;
     
-    public Priorityqueue(int max) {
+    public Minheap(int max) {
         max_size = max+1;
         heap = new Node[max_size];
         size = 0;       

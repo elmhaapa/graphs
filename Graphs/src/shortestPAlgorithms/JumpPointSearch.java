@@ -4,7 +4,7 @@
  */
 package shortestPAlgorithms;
 
-import datastructures.Priorityqueue;
+import datastructures.Minheap;
 import datastructures.Node;
 import datastructures.Stack;
 import datastructures.Queue;
@@ -16,7 +16,7 @@ import datastructures.Queue;
 public class JumpPointSearch {
 
     private boolean[][] closed_set;
-    private Priorityqueue open_set;
+    private Minheap open_set;
     private Node start;
     private Node target;
     private Node[][] map;
@@ -49,7 +49,7 @@ public class JumpPointSearch {
         map = new Node[grid.length][grid.length];
         //  initialize_map();
         int size = grid.length;
-        open_set = new Priorityqueue(size * size);
+        open_set = new Minheap(size * size);
         closed_set = new boolean[size][size];
 
         map[s_x][s_y] = new Node(s_x, s_y);
@@ -79,7 +79,7 @@ public class JumpPointSearch {
             s.push(target);
             target = target.previous;
         }
-      //  System.out.println("jps nv: " + nv);
+        System.out.println("jps nv: " + nv);
         return s;
     }
 
@@ -138,16 +138,36 @@ public class JumpPointSearch {
 
     }
 
- 
+    /**
+     * Calculates euclidean heuristic.
+     *
+     * @param dx target.x - current.x
+     * @param dy target.y - current.y
+     * @return heuristic
+     */
     private double euclidean(int dx, int dy) {
         return Math.sqrt(dx * dx + dy * dy);
     }
 
-
+    /**
+     * Recursive search direction parent -> current. Stop and return current
+     * value if: 1) Current node is the end node. 2) Current node is a forced
+     * neighbour. 3) Current node is intermediate in between parent and
+     * condition 1 or 2
+     *
+     * Something is wrong atm. Needs debugging.
+     *
+     * @param x current x
+     * @param y current y
+     * @param px parent x
+     * @param py parent y
+     * @return int[] {x,y}
+     */
     private int[] jump(int x, int y, int px, int py) {
 
         int dx = x - px;
         int dy = y - py;
+
 
         if (!is_walkable(x, y)) {
             return null;
@@ -178,30 +198,39 @@ public class JumpPointSearch {
         }
 
         // when moving diagonal, check vertical/horizontal jump points
-        if (!(dx == 0 && dy == 0)) {
-            int[] jx = jump(x + dx, y, x, y);
-            int[] jy = jump(x, y + dy, x, y);
+        if (dx != 0 && dy != 0) {
+            int[] jx = null;
+            int[] jy = null;
+            jx = jump(x + dx, y, x, y);
+            jy = jump(x, y + dy, x, y);
             if (jx != null || jy != null) {
                 return new int[]{x, y};
             }
         }
 
-        
-        if (dx == 0 && dy == 0) {
-            return new int[]{x, y};
-        }
-        
+
+        /*
+         if (dx == 0 && dy == 0) {
+         return new int[] {x,y};
+         }
+         */
 
 
+        /*
+         px = x;
+         py = y;
+         x = x + dx;
+         y = y + dy;
+         */
 
-      //  if (is_walkable(x + dx, y) || is_walkable(x, y + dy)) {
-            return jump(x + dx, y + dy, x, y);
-            /*
-        } else {
-            return null;
+        //   if (is_walkable(x + dx, y) || is_walkable(x, y + dy)) {
+        return jump(x + dx, y + dy, x, y);
+        /*   
+         } else {
+         return null;
 
-        }
-        */
+         }
+         */
 
     }
 
@@ -220,33 +249,39 @@ public class JumpPointSearch {
         int y = n.y;
         Node parent = n.previous;
 
+
         // directed pruning can ignore neighbours unless forced.
         if (parent != null) {
             int px = parent.x;
             int py = parent.y;
             // normalized direction of travel
-            int dx = (x - px)  / Math.max(Math.abs(x - px), 1);
-            int dy = (y - py)  / Math.max(Math.abs(y - py), 1);
+            int dx = (x - px) / Math.max(Math.abs(x - px), 1);
+            int dy = (y - py) / Math.max(Math.abs(y - py), 1);
+
+            boolean sqr1 = is_walkable(x + dx, y);
+            boolean sqr2 = is_walkable(x - dx, y);
+            boolean sqr3 = is_walkable(x, y + dy);
+            boolean sqr4 = is_walkable(x, y - dy);
 
             // search diagonally
             if (dx != 0 && dy != 0) {
-                if (is_walkable(x, y + dy)) {
+                if (sqr3) {
                     neighbours.enqueue(new int[]{x, y + dy});
                 }
-                if (is_walkable(x + dx, y)) {
+                if (sqr1) {
                     neighbours.enqueue(new int[]{x + dx, y});
                 }
-                if (is_walkable(x, y + dy) || is_walkable(x + dx, y)) {
+                if (sqr3 || sqr1) {
                     if (is_walkable(x + dx, y + dy)) {
                         neighbours.enqueue(new int[]{x + dx, y + dy});
                     }
                 }
-                if (!is_walkable(x - dx, y) && is_walkable(x, y + dy)) {
+                if (!sqr2 && sqr3) {
                     if (is_walkable(x - dx, y + dy)) {
                         neighbours.enqueue(new int[]{x - dx, y + dy});
                     }
                 }
-                if (!is_walkable(x, y - dy) && is_walkable(x + dx, y)) {
+                if (!sqr4 && sqr1) {
                     if (is_walkable(x + dx, y - dy)) {
                         neighbours.enqueue(new int[]{x + dx, y - dy});
                     }
@@ -260,7 +295,7 @@ public class JumpPointSearch {
                         }
                         if (!is_walkable(x + 1, y)) {
                             if (is_walkable(x + 1, y + dy)) {
-                                neighbours.enqueue(new int[]{x - 1, y + dy});
+                                neighbours.enqueue(new int[]{x + 1, y + dy});
                             }
                         }
                         if (!is_walkable(x - 1, y)) {
@@ -303,7 +338,7 @@ public class JumpPointSearch {
      * @return true if is walkable square (node).
      */
     private boolean is_walkable(int x, int y) {
-        if (x >= 0 && y >= 0 && x < closed_set.length && y < closed_set.length && grid[x][y] != 9) {
+        if (x >= 0 && y >= 0 && x < map.length && y < map.length && grid[x][y] != 9) {
             return true;
         }
         return false;

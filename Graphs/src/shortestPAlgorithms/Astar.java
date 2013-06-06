@@ -4,9 +4,10 @@
  */
 package shortestPAlgorithms;
 
+import datastructures.Queue;
 import datastructures.Stack;
 import datastructures.Node;
-import datastructures.Priorityqueue;
+import datastructures.Minheap;
 
 /**
  * A* shortest path algorithm
@@ -15,7 +16,7 @@ public class Astar {
 
     private boolean closed_set[][];
     private Node target;
-    private Priorityqueue open_set;
+    private Minheap open_set;
     private int size;
     private Node[][] map;
     private int[][] grid;
@@ -45,7 +46,7 @@ public class Astar {
         start.f_value = 0;
 
 
-        open_set = new Priorityqueue(size * size);
+        open_set = new Minheap(size * size);
         closed_set = new boolean[size][size];
 
 
@@ -65,7 +66,7 @@ public class Astar {
                 break;
             }
 
-            Stack neighbours = get_neighbours(current);
+            Queue neighbours = get_neighbours(current);
             evaluate_neighbours(neighbours, current);
 
 
@@ -85,13 +86,14 @@ public class Astar {
     /**
      * We take stack of neighbours of current node and the node itself and
      * evaluate them and add them to priority queue.
+     *
      * @param neighbours Stack of neighbours of current node.
      * @param current node.
      */
-    private void evaluate_neighbours(Stack neighbours, Node current) {
+    private void evaluate_neighbours(Queue neighbours, Node current) {
         while (!neighbours.is_empty()) {
-            Node n = neighbours.pop();
-
+            int[] n_coord = neighbours.dequeue();
+            Node n = map[n_coord[0]][n_coord[1]];
             if (closed_set[n.x][n.y]) {
                 continue;
             }
@@ -126,7 +128,8 @@ public class Astar {
     private int manhattan_h(int x, int y, int tx, int ty) {
         int dx = Math.abs(x - tx);
         int dy = Math.abs(y - ty);
-        return  (dx + dy);
+        return (dx + dy);
+
     }
 
     /**
@@ -135,8 +138,8 @@ public class Astar {
      * @param n node for returning neighbours
      * @return returns stack of neighbours.
      */
-    private Stack get_neighbours(Node n) {
-        Stack ret = new Stack(8);
+    private Queue get_neighbours(Node n) {
+        Queue ret = new Queue(9);
         if (check_is_node(n.x + 1, n.y)) {
             create_n_stack__nodes(n.x + 1, n.y, ret);
         }
@@ -174,11 +177,11 @@ public class Astar {
      * @param y coordinate of node
      * @param s stack of neighbours.
      */
-    private void create_n_stack__nodes(int x, int y, Stack s) {
+    private void create_n_stack__nodes(int x, int y, Queue s) {
         if (map[x][y] == null) {
             map[x][y] = new Node(x, y);
         }
-        s.push(map[x][y]);
+        s.enqueue(new int[]{x, y});
     }
 
     /**
