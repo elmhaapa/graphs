@@ -44,6 +44,7 @@ public class JumpPointSearch {
      * @return Stack of nodes representing optimal path. Top node first step.
      */
     public Stack get_shortest_path(int s_x, int s_y, int t_x, int t_y, int[][] grid) {
+        map = new Node[grid.length][grid.length];
         this.grid = grid;
         map = new Node[grid.length][grid.length];
         //  initialize_map();
@@ -78,7 +79,7 @@ public class JumpPointSearch {
             s.push(target);
             target = target.previous;
         }
-        System.out.println("jps nv: " + nv);
+      //  System.out.println("jps nv: " + nv);
         return s;
     }
 
@@ -185,10 +186,11 @@ public class JumpPointSearch {
             }
         }
 
+        
         if (dx == 0 && dy == 0) {
             return new int[]{x, y};
         }
-
+        
 
 
 
@@ -223,8 +225,8 @@ public class JumpPointSearch {
             int px = parent.x;
             int py = parent.y;
             // normalized direction of travel
-            int dx = (x - px) / Math.max(Math.abs(x - px), 1);
-            int dy = (y - py) / Math.max(Math.abs(y - py), 1);
+            int dx = (x - px)  / Math.max(Math.abs(x - px), 1);
+            int dy = (y - py)  / Math.max(Math.abs(y - py), 1);
 
             // search diagonally
             if (dx != 0 && dy != 0) {

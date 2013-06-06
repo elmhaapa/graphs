@@ -47,29 +47,30 @@ public class Main {
         int i = 0;
         long a_sum = 0;
         long jps_sum = 0;
-        Astar star = new Astar();
-        JumpPointSearch jps = new JumpPointSearch();
-        int sx = size-1;
-        int sy = size/2;
+
+        int sx = size - 1;
+        int sy = size / 2;
         int tx = 0;
         int ty = 0;
         long startTime;
         long endTime;
+        int[][] grid = build_grid(size);
         while (i < amount) {
-            int[][] grid = build_grid(size);
             startTime = System.currentTimeMillis();
+            Astar star = new Astar();
             Stack s = star.get_shortest_path(grid, sx, sy, tx, ty);
             endTime = System.currentTimeMillis();
             a_sum = a_sum + (endTime - startTime);
-            
+
             startTime = System.currentTimeMillis();
-            Stack b = jps.get_shortest_path(sx,sy,tx,ty,grid);
+            JumpPointSearch jps = new JumpPointSearch();
+            Stack b = jps.get_shortest_path(sx, sy, tx, ty, grid);
             endTime = System.currentTimeMillis();
             jps_sum = jps_sum + (endTime - startTime);
             i++;
 
         }
-        System.out.println("Average: a*: " + ((double)a_sum)/amount + " jps: " + ((double)jps_sum)/amount);
+        System.out.println("Average: a*: " + ((double) a_sum) / amount + " jps: " + ((double) jps_sum) / amount);
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -88,7 +89,7 @@ public class Main {
         int tahti_y = size_of_map / 2;
         a.change_color(tahti_x, tahti_y, 2);
 
-   //     int[] r_target_points = random_points(size_of_map);
+        //     int[] r_target_points = random_points(size_of_map);
 
         long startTime = System.nanoTime();
         Stack s = tahti.get_shortest_path(grid, tahti_x, tahti_y,
@@ -115,7 +116,7 @@ public class Main {
             //   Thread.sleep(500);
             a.change_color(p.x, p.y, 3);
         }
-    //    calc_average(20, 100);
+        calc_average(500, 20);
 
 
         /*

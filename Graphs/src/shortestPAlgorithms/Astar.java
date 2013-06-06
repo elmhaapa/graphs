@@ -78,7 +78,7 @@ public class Astar {
             s.push(new Node(target.x, target.y));
             target = target.previous;
         }
-        System.out.println("a* nv: " + nv);
+//        System.out.println("a* nv: " + nv);
         return s;
     }
 
@@ -126,7 +126,7 @@ public class Astar {
     private int manhattan_h(int x, int y, int tx, int ty) {
         int dx = Math.abs(x - tx);
         int dy = Math.abs(y - ty);
-        return 1 * (dx + dy);
+        return  (dx + dy);
     }
 
     /**
