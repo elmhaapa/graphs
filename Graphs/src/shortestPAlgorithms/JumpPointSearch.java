@@ -165,7 +165,7 @@ public class JumpPointSearch {
     }
 
     /**
-     * Calculates euclidean heuristic.
+     * Calculates Euclidean heuristic.
      *
      * @param dx target.x - current.x
      * @param dy target.y - current.y

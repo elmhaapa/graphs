@@ -43,7 +43,7 @@ public class Main {
         return grid;
     }
 
-    private static void calc_average(int amount, int size) {
+    private static String calc_average(int amount, int size) {
         int i = 0;
         long a_sum = 0;
         long jps_sum = 0;
@@ -71,8 +71,8 @@ public class Main {
             i++;
 
         }
-        System.out.println("Average: a*: " + ((double) a_sum) / amount + " jps: " + ((double) jps_sum) / amount);
-        System.out.println("Suhde (noin): " + ((int) (a_sum) / (jps_sum)));
+        return "Keskiarvo (MS): a*: " + ((double) a_sum) / amount + " jps: " + ((double) jps_sum) / amount + " Suhde (noin): "+ ((int) (a_sum) / (jps_sum));
+
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -81,8 +81,9 @@ public class Main {
          */
 
 
+        /*
 
-        int size_of_map = 20;
+        int size_of_map = 40;
         int[][] grid = build_grid(size_of_map);
         Window a = new Window(grid);
         //     Runner v = new Runner(size_of_map);
@@ -118,7 +119,10 @@ public class Main {
             //   Thread.sleep(500);
             a.change_color(p.x, p.y, 3);
         }
-        calc_average(20, 800);
+        */
+        for (int i = 1; i < 7; ++i) {
+            System.out.println(i*100 + " * " + i*100 + " grid " + calc_average(20,i*100));
+        }
 
 
         /*
