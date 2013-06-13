@@ -69,9 +69,13 @@ public class Astar {
             Queue neighbours = get_neighbours(current);
             evaluate_neighbours(neighbours, current);
 
-
         }
 
+        if (target.previous == null) {
+            // There's no route return null
+            return null;
+        }
+        
         // Next we backtrack the route.
         Stack s = new Stack(size * size);
 
@@ -79,7 +83,7 @@ public class Astar {
             s.push(new Node(target.x, target.y));
             target = target.previous;
         }
-//        System.out.println("a* nv: " + nv);
+
         return s;
     }
 

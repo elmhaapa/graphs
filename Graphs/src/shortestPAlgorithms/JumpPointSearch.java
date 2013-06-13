@@ -47,7 +47,7 @@ public class JumpPointSearch {
         map = new Node[grid.length][grid.length];
         this.grid = grid;
         map = new Node[grid.length][grid.length];
-        //  initialize_map();
+
         int size = grid.length;
         open_set = new Minheap(size * size);
         closed_set = new boolean[size][size];
@@ -73,14 +73,39 @@ public class JumpPointSearch {
 
             identify_successor(node);
         }
+        
+        return backtrack_route();
+    }
 
-        Stack s = new Stack(size * size);
+    private Stack backtrack_route() {
+        if (target.previous == null) {
+            // There is no route, return null
+            return null;
+        }
+        Stack s = new Stack(100);
+        // We walk back from target node till the start and add all to stack
         while (target.previous != null) {
+            Node tmp = target;
             s.push(target);
             target = target.previous;
+            // Check if next node is right next one or do we need to add missing ones.
+            check_next(tmp, target, s);
         }
-        //  System.out.println("jps nv: " + nv);
+
         return s;
+    }
+    
+    private void check_next(Node p, Node c, Stack s) {
+        int dx = (c.x - p.x) / Math.max(Math.abs(c.x - p.x), 1);
+        int dy = (c.y - p.y) / Math.max(Math.abs(c.y - p.y), 1);
+        int px = p.x + dx;
+        int py = p.y + dy;
+
+        while (!(px == c.x && py == c.y)) {
+            s.push(new Node(px, py));
+            px = px + dx;
+            py = py + dy;
+        }
     }
 
     /**
@@ -92,6 +117,7 @@ public class JumpPointSearch {
     private void identify_successor(Node node) {
         int x = node.x;
         int y = node.y;
+
         Queue neighbours = find_neighbours(node);
 
 
@@ -100,21 +126,19 @@ public class JumpPointSearch {
 
             int[] jump_coord = jump(neighbour[0], neighbour[1], x, y);
 
-            if (jump_coord != null && is_walkable(jump_coord[0], jump_coord[1])) {
+            if (jump_coord[0] != -1) {
 
                 int jx = jump_coord[0];
                 int jy = jump_coord[1];
+
+                if (closed_set[jx][jy]) {
+                    continue;
+                }
 
                 if (map[jx][jy] == null) {
                     map[jx][jy] = new Node(jx, jy);
                 }
                 Node jump_point = map[jx][jy];
-
-                
-                if (closed_set[jx][jy]) {
-                    continue;
-                }
-                
 
                 // distance
                 double d = euclidean(Math.abs(jx - x), Math.abs(jy - y));
@@ -157,8 +181,6 @@ public class JumpPointSearch {
      * neighbour. 3) Current node is intermediate in between parent and
      * condition 1 or 2
      *
-     * Something is wrong atm. Needs debugging.
-     *
      * @param x current x
      * @param y current y
      * @param px parent x
@@ -166,73 +188,48 @@ public class JumpPointSearch {
      * @return int[] {x,y}
      */
     private int[] jump(int x, int y, int px, int py) {
+        int[] jx = {-1, -1}; // instead of returning null we return -1
+        int[] jy = {-1, -1}; 
+        int dx = (x - px) / Math.max(Math.abs(x - px), 1); // for finding parent -> child direction
+        int dy = (y - py) / Math.max(Math.abs(y - py), 1); 
 
-        int dx = (x - px)/Math.max(Math.abs(x-px),1);
-        int dy = (y - py)/Math.max(Math.abs(y-py),1);
-
-
-        if (!is_walkable(x, y)) {
-            return null;
-        } else if (x == target.x && y == target.y) {
+        if (!is_walkable(x, y)) { // we hit a wall return (-1, -1)
+            return new int[]{-1, -1}; 
+        }
+        if (x == target.x && y == target.y) { // if we found target, return it
             return new int[]{x, y};
         }
-
-        // check for forced neighbors
-        // along the diagonal
-        if (!(dx == 0 && dy == 0)) {
-            if ((is_walkable(x - dx, y + dy) && !is_walkable(x - dx, y))
-                    || (is_walkable(x + dx, y - dy) && !is_walkable(x, y - dy))) {
+        if (dx != 0 && dy != 0) { // diagonal forced neighbours
+            if ((is_walkable(x - dx, y + dy) && !is_walkable(x - dx, y)) || 
+                    (is_walkable(x + dx, y - dy) && !is_walkable(x, y - dy))) { 
                 return new int[]{x, y};
             }
-        } else {
-            // horizontal/vertical
-            if (dx != 0) {
-                if ((is_walkable(x + dx, y + 1) && !is_walkable(x, y + 1))
-                        || (is_walkable(x + dx, y - 1) && !is_walkable(x, y - 1))) {
+        } else { //check for horizontal/vertical
+            if (dx != 0) { 
+                if ((is_walkable(x + dx, y + 1) && !is_walkable(x, y + 1)) || 
+                        (is_walkable(x + dx, y - 1) && !is_walkable(x, y - 1))) {
                     return new int[]{x, y};
                 }
             } else {
-                if ((is_walkable(x + 1, y + dy) && !is_walkable(x + 1, y))
-                        || (is_walkable(x - 1, y + dy) && !is_walkable(x - 1, y))) {
+                if ((is_walkable(x + 1, y + dy) && !is_walkable(x + 1, y)) || 
+                        (is_walkable(x - 1, y + dy) && !is_walkable(x - 1, y))) {	
                     return new int[]{x, y};
                 }
             }
         }
 
-        // when moving diagonal, check vertical/horizontal jump points
-        if (dx != 0 && dy != 0) {
-            int[] jx = null;
-            int[] jy = null;
+        if (dx != 0 && dy != 0) { 
             jx = jump(x + dx, y, x, y);
             jy = jump(x, y + dy, x, y);
-            if (jx != null || jy != null) {
+            if (jx[0] != -1 || jy[0] != -1) {
                 return new int[]{x, y};
             }
         }
-
-
-
-        if (dx == 0 && dy == 0) {
-            return new int[]{x, y};
+        if (is_walkable(x + dx, y) || is_walkable(x, y + dy)) { 
+            return jump(x + dx, y + dy, x, y);
+        } else { //if blocked diagonal move return null (-1,-1)
+            return new int[]{-1, -1};
         }
-
-
-
-        /*
-         px = x;
-         py = y;
-         x = x + dx;
-         y = y + dy;
-         */
-
-        //   if (is_walkable(x + dx, y) || is_walkable(x, y + dy)) {
-        return jump(x + dx, y + dy, x, y);
-        /*   
-         } else {
-         return null;
-
-         }
-         */
 
     }
 

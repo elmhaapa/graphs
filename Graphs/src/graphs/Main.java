@@ -72,6 +72,7 @@ public class Main {
 
         }
         System.out.println("Average: a*: " + ((double) a_sum) / amount + " jps: " + ((double) jps_sum) / amount);
+        System.out.println("Suhde (noin): " + ((int) (a_sum) / (jps_sum)));
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -117,7 +118,7 @@ public class Main {
             //   Thread.sleep(500);
             a.change_color(p.x, p.y, 3);
         }
-        calc_average(10, 100);
+        calc_average(20, 800);
 
 
         /*
