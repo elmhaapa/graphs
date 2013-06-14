@@ -13,8 +13,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
- * 
+ * Here we have simple tests to see if a* works correctly.
+ * Tests with both a* and JPS can be found under JumpPointSearchTest.java
  */
 public class AstarTest {
 

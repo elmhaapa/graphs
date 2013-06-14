@@ -12,10 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * 
- */
+
 public class MinheapTest {
     
     Minheap q;
@@ -69,8 +66,6 @@ public class MinheapTest {
             assertEquals(i, (int)n.f_value);
         } 
         
-   //     assertEquals(1, q.removemin().f_value);
-     //   assertEquals(2, q.removemin().f_value);
     }
     
     @Test

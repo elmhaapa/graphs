@@ -43,6 +43,14 @@ public class Main {
         return grid;
     }
 
+    /**
+     * We calculate average time and return it as string for main to print.
+     *
+     * @param amount this is how many times we calc for one size
+     * @param size this is for how large grids we calc. size*size is the amount
+     * of nodes
+     * @return
+     */
     private static String calc_average(int amount, int size) {
         int i = 0;
         long a_sum = 0;
@@ -54,7 +62,7 @@ public class Main {
         int ty = 0;
         long startTime;
         long endTime;
-        
+
         while (i < amount) {
             int[][] grid = build_grid(size);
             startTime = System.currentTimeMillis();
@@ -71,66 +79,23 @@ public class Main {
             i++;
 
         }
-        return "Keskiarvo (MS): a*: " + ((double) a_sum) / amount + " jps: " + ((double) jps_sum) / amount + " Suhde (noin): "+ ((int) (a_sum) / (jps_sum));
+        return "Keskiarvo (MS): a*: " + ((double) a_sum) / amount + " jps: " + ((double) jps_sum) / amount + " Suhde (noin): " + ((int) (a_sum) / (jps_sum));
 
     }
 
     public static void main(String[] args) throws InterruptedException {
-        /*
-         * Some test to check how everything works.
-         */
-
-
-        /*
-
-        int size_of_map = 40;
-        int[][] grid = build_grid(size_of_map);
-        Window a = new Window(grid);
-        //     Runner v = new Runner(size_of_map);
-        Astar tahti = new Astar();
-        int tahti_x = size_of_map - 1;
-        int tahti_y = size_of_map / 2;
-        a.change_color(tahti_x, tahti_y, 2);
-
-        //     int[] r_target_points = random_points(size_of_map);
-
-        long startTime = System.currentTimeMillis();
-        Stack s = tahti.get_shortest_path(grid, tahti_x, tahti_y,
-                0, 0);
-
-        long endTime = System.currentTimeMillis();
-        long difference = endTime - startTime;
-        System.out.println("A* MS: " + difference + " Size: " + s.size());
-
-        while (!s.is_empty()) {
-            Node p = s.pop();
-            a.change_color(p.x, p.y, 2);
+        // We compare the JPS and A*
+        int times = 20;
+        if (args.length == 1) {
+            try {
+                times = Math.abs(Integer.parseInt(args[0]));
+            } catch (NumberFormatException e) {
+                // User didnt give number do nothing.
+            }
+        }
+        for (int i = 1; i <= times; ++i) {
+            System.out.println(i * 100 + " * " + i * 100 + " grid " + calc_average(20, i * 100));
         }
 
-        JumpPointSearch jps = new JumpPointSearch();
-        startTime = System.currentTimeMillis();
-        s = jps.get_shortest_path(tahti_x, tahti_y, 0, 0, grid);
-        endTime = System.currentTimeMillis();
-        difference = endTime - startTime;
-        System.out.println("JPS MS: " + difference + " Size :" + s.size());
-
-        while (!s.is_empty()) {
-            Node p = s.pop();
-            //   Thread.sleep(500);
-            a.change_color(p.x, p.y, 3);
-        }
-        */
-        for (int i = 1; i < 7; ++i) {
-            System.out.println(i*100 + " * " + i*100 + " grid " + calc_average(20,i*100));
-        }
-
-
-        /*
-         int[][] t = new int[][] { {1,1}, {1,3}, {1,5}, {3,5}, {5,5}, {5,3}, {5,1}, {3,1}};
-        
-         for (int i = 0; i < t.length; ++i) {
-         System.out.println((3-t[i][0]) + " " + (3- t[i][1]));
-         }
-         */
     }
 }

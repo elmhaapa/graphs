@@ -23,16 +23,6 @@ public class JumpPointSearch {
     private int[][] grid;
     private int nv;
 
-    /*
-     private void initialize_map() {
-     for (int i = 0; i < map.length; ++i) {
-     for (int j = 0; j < map.length; ++j) {
-     map[i][j] = new Node(i, j);
-     // map[i][j].g_value = euclidean(i, j, start.x, start.y);
-     }
-     }
-     }
-     */
     /**
      * Shortest path between two points.
      *

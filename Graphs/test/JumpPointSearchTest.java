@@ -29,6 +29,44 @@ public class JumpPointSearchTest {
     public JumpPointSearchTest() {
     }
 
+    /**
+     * Returns random points for grid
+     *
+     * @param size of grid
+     * @return tuple of points
+     */
+    private int[] random_points(int size) {
+        int[] points = new int[2];
+        points[0] = (int) ((Math.random() * 100) % size);
+        points[1] = (int) ((Math.random() * 100) % size);
+        if (points[0] == 0 && points[1] == 0) {
+            return random_points(size);
+        }
+        return points;
+    }
+
+    /**
+     * Builds grid of size*size
+     * @param size length of one axis
+     * @return grid
+     */
+    private int[][] build_grid(int size) {
+        int[][] grid = new int[size][size];
+
+        for (int i = 0; i < size - 1; ++i) {
+            boolean set = false;
+            while (!set) {
+                int[] points = random_points(size);
+                if (grid[points[0]][points[1]] != 9) {
+                    grid[points[0]][points[1]] = 9;
+                    set = true;
+                }
+            }
+        }
+
+        return grid;
+    }
+
     @BeforeClass
     public static void setUpClass() {
     }
@@ -39,7 +77,7 @@ public class JumpPointSearchTest {
 
     @Before
     public void setUp() {
-       jps = new JumpPointSearch();
+        jps = new JumpPointSearch();
         a = new Astar();
         int size = 30;
         grid = new int[size][size];
@@ -66,6 +104,43 @@ public class JumpPointSearchTest {
 
         assertEquals(star_stack.size(), jps_stack.size());
     }
+    
+    @Test
+    public void testShortesPath2() {
+        // This time we test paths with obstacles. It is possible that there is no path
+        // at all so we must accept null aswell.
+        int[][] grid_obstacles = build_grid(50);
+        //(0,0) is the target
+        Stack star_stack = a.get_shortest_path(grid_obstacles, startx, starty, 0, 0);
+        Stack jps_stack = jps.get_shortest_path(startx, starty, 0, 0, grid_obstacles);
+        boolean correct_paths = (star_stack == null && jps_stack == null) || (jps_stack.size() == star_stack.size());
+        assertEquals(true, correct_paths);
+    }
+    @Test
+    public void correctLastStep() {
+        // We test if the last step on our route is correct one.
+        Stack jps_stack = jps.get_shortest_path(startx, starty, 0, 0, grid);
+        Node last_step = new Node(1,1);
+        while(!jps_stack.is_empty()) {
+            last_step = jps_stack.pop();
+        }
+        assertEquals(0, last_step.x);
+        assertEquals(0, last_step.y);         
+    }
+    @Test
+    public void correctLastStep2() {
+        // Here we test if last step is correct with a grid that has obstacles
+        // end point is (0,99)
+        int[][] grid_obstacles = build_grid(100);
+        Stack jps_stack = jps.get_shortest_path(startx, starty, 0, 99, grid_obstacles);
+        Node last_step = new Node(2,2);
+        while (!jps_stack.is_empty()) {
+            last_step = jps_stack.pop();
+        }
+        assertEquals(0, last_step.x);
+        assertEquals(99, last_step.y);
+    }
+           
 
     @Test
     public void testTime() {
@@ -94,8 +169,8 @@ public class JumpPointSearchTest {
             jps_sum = jps_sum + (finishT - startT);
             i++;
         }
-        star_average = (double)(star_sum / 10);
-        jps_average = (double)(jps_sum / 10);
+        star_average = (double) (star_sum / 10);
+        jps_average = (double) (jps_sum / 10);
         assertEquals(true, (jps_average < star_average));
     }
 }
